@@ -241,13 +241,13 @@ function buildAgentUserContent(prompt, attachedFiles) {
   return combinedText;
 }
 
-async function callQuaasxAPI(apiKey, messages) {
+async function callQuaasxAPI(apiKey, messages, temperature) {
   const config = getGatewayConfig(apiKey);
   const actualModel = getActualModelId('quaasx-cognitive-4', config.provider);
   const fetchBody = {
     model: actualModel,
     messages: messages,
-    temperature: 1.0
+    temperature: parseFloat(temperature) || 1.0
   };
 
   const response = await fetch(config.url, {
@@ -271,13 +271,13 @@ async function callQuaasxAPI(apiKey, messages) {
   return data.choices[0].message.content;
 }
 
-async function callQuaasxAPIStream(apiKey, messages, onThinking, onContent) {
+async function callQuaasxAPIStream(apiKey, messages, onThinking, onContent, temperature) {
   const config = getGatewayConfig(apiKey);
   const actualModel = getActualModelId('quaasx-cognitive-4', config.provider);
   const fetchBody = {
     model: actualModel,
     messages: messages,
-    temperature: 1.0,
+    temperature: parseFloat(temperature) || 1.0,
     stream: true
   };
 
@@ -375,7 +375,7 @@ module.exports = async (req, res) => {
   }
 
   try {
-    const { apiKey, prompt, mode, attachedFiles } = req.body;
+    const { apiKey, prompt, mode, attachedFiles, temperature } = req.body;
     const effectiveApiKey = apiKey || process.env.NVIDIA_API_KEY || process.env.MOONSHOT_API_KEY || process.env.QUAASX_API_KEY;
     if (!effectiveApiKey) {
       sendSSE('error', { message: 'API key is required. Please set it in Vercel environment variables (NVIDIA_API_KEY or MOONSHOT_API_KEY) or enter it in the client.' });
@@ -436,7 +436,7 @@ module.exports = async (req, res) => {
 
     let planText = '';
     try {
-      planText = await callQuaasxAPI(effectiveApiKey, plannerMessages);
+      planText = await callQuaasxAPI(effectiveApiKey, plannerMessages, temperature);
       sendSSE('telemetry', { text: '[PLANNER_AGENT] Blueprint finalized successfully.', class: 'success-line' });
     } catch (err) {
       sendSSE('telemetry', { text: 'Planner step failed, using direct fallback: ' + err.message, class: 'system' });
@@ -498,7 +498,8 @@ module.exports = async (req, res) => {
         },
         (contentChunk) => {
           sendSSE('content', contentChunk);
-        }
+        },
+        temperature
       );
       resultPayload = streamResult.content;
     } catch (err) {
@@ -576,7 +577,7 @@ module.exports = async (req, res) => {
       ];
 
       try {
-        const correctedContent = await callQuaasxAPI(effectiveApiKey, selfHealMessages);
+        const correctedContent = await callQuaasxAPI(effectiveApiKey, selfHealMessages, temperature);
         const parsedCorrected = tryParseJSON(correctedContent);
         if (parsedCorrected) {
           sendSSE('telemetry', { text: '[SELF-HEALING] Corrections applied successfully. Re-evaluating formulas...', class: 'success-line' });

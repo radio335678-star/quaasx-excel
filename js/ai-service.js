@@ -188,7 +188,7 @@
     var fetchBody = {
       model: getActualModelId(QUAASX_MODEL_ID, config.provider),
       messages: messages,
-      temperature: 1.0
+      temperature: parseFloat(localStorage.getItem('quaasx_engine_temperature') || '1.0')
     };
 
     if (target.isProxy) {
@@ -259,7 +259,7 @@
     var fetchBody = {
       model: actualModel,
       messages: messages,
-      temperature: 1.0,
+      temperature: parseFloat(localStorage.getItem('quaasx_engine_temperature') || '1.0'),
       stream: true
     };
 

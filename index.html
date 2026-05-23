@@ -1031,61 +1031,155 @@
         <h3>⚙️ System Settings</h3>
         <button id="close-settings-btn" class="close-modal-btn">&times;</button>
       </div>
-      <div class="settings-modal-body">
-        <div class="setting-group">
-          <label>Subscription & Usage</label>
-          <p class="setting-help">Manage your subscription packages and monitor API token allocations.</p>
-          
-          <!-- Token usage meter for Free Plan -->
-          <div class="token-meter-container" id="settings-token-meter-container" style="display: none;">
-            <div class="token-meter-label-row">
-              <span>Free Credits Consumed:</span>
-              <span id="settings-token-count-text">0 / 100,000 tokens</span>
-            </div>
-            <div class="token-meter-bar">
-              <div class="token-meter-fill" id="settings-token-meter-fill"></div>
+      <div class="settings-container-layout">
+        <!-- Settings Sidebar -->
+        <aside class="settings-sidebar">
+          <button class="settings-tab-btn active" data-tab="profile">
+            <span class="tab-icon">👤</span> Profile & Account
+          </button>
+          <button class="settings-tab-btn" data-tab="billing">
+            <span class="tab-icon">💳</span> Billing & Usage
+          </button>
+          <button class="settings-tab-btn" data-tab="model">
+            <span class="tab-icon">🧠</span> Cognitive Engine
+          </button>
+          <button class="settings-tab-btn" data-tab="preferences">
+            <span class="tab-icon">⚡</span> Preferences
+          </button>
+          <button class="settings-tab-btn text-danger" data-tab="danger">
+            <span class="tab-icon">⚠️</span> Danger Zone
+          </button>
+        </aside>
+
+        <!-- Settings Content -->
+        <div class="settings-tab-content">
+          <!-- Profile Tab -->
+          <div id="tab-profile" class="settings-tab-panel active">
+            <div class="setting-group profile-card-wrapper">
+              <label>User Profile</label>
+              <div class="profile-header-premium">
+                <div class="profile-avatar-large" id="settings-profile-avatar">G</div>
+                <div class="profile-details-premium">
+                  <h4 id="settings-profile-name">Guest User</h4>
+                  <span id="settings-profile-email">guest@quaasx.com</span>
+                </div>
+              </div>
+              
+              <div class="setting-group" style="margin-top: 16px;">
+                <label for="settings-display-name-input">Display Name</label>
+                <div style="display: flex; gap: 8px;">
+                  <input type="text" id="settings-display-name-input" placeholder="Enter display name" style="flex: 1; background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 8px 12px; color: var(--text-primary); font-family: inherit; font-size: 12px; outline: none; transition: all var(--transition-fast);">
+                  <button id="settings-save-name-btn" style="background: var(--accent-gradient); border: none; border-radius: var(--radius-sm); padding: 8px 16px; color: white; cursor: pointer; font-size: 12px; font-weight: 500;">Save Name</button>
+                </div>
+              </div>
+              
+              <div style="margin-top: 24px; border-top: 1px solid var(--border-color); padding-top: 16px;">
+                <button id="settings-signout-btn" class="danger-btn" style="width: fit-content; padding: 8px 20px;">Sign Out of Application</button>
+              </div>
             </div>
           </div>
 
-          <div class="settings-pricing-options">
-            <!-- Free card -->
-            <div class="settings-pricing-card" data-plan="free" id="settings-plan-free">
-              <h4>Free Tier</h4>
-              <div class="price">₹0</div>
-              <button>Select</button>
-            </div>
-            <!-- Pro card -->
-            <div class="settings-pricing-card" data-plan="pro" id="settings-plan-pro">
-              <h4>Pro Plan</h4>
-              <div class="price">₹499/mo</div>
-              <button>Upgrade</button>
-            </div>
-            <!-- Pro-Plus card -->
-            <div class="settings-pricing-card" data-plan="pro-plus" id="settings-plan-pro-plus">
-              <h4>Pro-Plus</h4>
-              <div class="price">₹999/mo</div>
-              <button>Upgrade</button>
+          <!-- Billing Tab -->
+          <div id="tab-billing" class="settings-tab-panel">
+            <div class="setting-group">
+              <label>Subscription & Usage</label>
+              <p class="setting-help">Manage your subscription packages and monitor API token allocations.</p>
+              
+              <!-- Token usage meter -->
+              <div class="token-meter-container" id="settings-token-meter-container" style="display: none; margin-bottom: 16px;">
+                <div class="token-meter-label-row">
+                  <span>Free Credits Consumed:</span>
+                  <span id="settings-token-count-text">0 / 100,000 tokens</span>
+                </div>
+                <div class="token-meter-bar">
+                  <div class="token-meter-fill" id="settings-token-meter-fill"></div>
+                </div>
+              </div>
+
+              <div class="settings-pricing-options">
+                <!-- Free card -->
+                <div class="settings-pricing-card" data-plan="free" id="settings-plan-free">
+                  <h4>Free Tier</h4>
+                  <div class="price">₹0</div>
+                  <button>Select</button>
+                </div>
+                <!-- Pro card -->
+                <div class="settings-pricing-card" data-plan="pro" id="settings-plan-pro">
+                  <h4>Pro Plan</h4>
+                  <div class="price">₹499/mo</div>
+                  <button>Upgrade</button>
+                </div>
+                <!-- Pro-Plus card -->
+                <div class="settings-pricing-card" data-plan="pro-plus" id="settings-plan-pro-plus">
+                  <h4>Pro-Plus</h4>
+                  <div class="price">₹999/mo</div>
+                  <button>Upgrade</button>
+                </div>
+              </div>
+              <div style="margin-top: 12px; text-align: center;">
+                <a href="mailto:info@quaasx108.com" style="color: var(--text-muted); font-size: 11px; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='var(--accent-primary)'" onmouseout="this.style.color='var(--text-muted)'">Need Enterprise volume? Contact sales.</a>
+              </div>
             </div>
           </div>
-          <div style="margin-top: 8px; text-align: center;">
-            <a href="mailto:info@quaasx108.com" style="color: var(--text-muted); font-size: 11px; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='var(--accent-primary)'" onmouseout="this.style.color='var(--text-muted)'">Need Enterprise volume? Contact sales.</a>
+
+          <!-- Model Tab -->
+          <div id="tab-model" class="settings-tab-panel">
+            <div class="setting-group">
+              <label for="model-selector">Cognitive Model</label>
+              <p class="setting-help">Select the LLM core model to generate sheets.</p>
+              <select id="model-selector" class="settings-select">
+                <option value="quaasx-cognitive-4" selected>quaasx-cognitive-4 (Balanced & Smart)</option>
+                <option value="quaasx-cognitive-ultra">quaasx-cognitive-ultra (Scientific Specialization)</option>
+                <option value="quaasx-cognitive-speed">quaasx-cognitive-speed (Fast Execution)</option>
+              </select>
+            </div>
+            
+            <div class="setting-group" style="margin-top: 20px;">
+              <label for="settings-temperature">Generation Temperature</label>
+              <p class="setting-help">Controls cognitive variance. Lower values are precise, higher values encourage formula diversity.</p>
+              <div class="settings-slider-wrapper">
+                <input type="range" id="settings-temperature" min="0.0" max="1.5" step="0.1" value="1.0" class="settings-slider">
+                <span id="settings-temperature-value" class="settings-slider-value">1.0</span>
+              </div>
+            </div>
           </div>
-        </div>
 
-        <div class="setting-group">
-          <label for="model-selector">Cognitive Model</label>
-          <p class="setting-help">Select the LLM core model to generate sheets.</p>
-          <select id="model-selector" class="settings-select">
-            <option value="quaasx-cognitive-4" selected>quaasx-cognitive-4 (Balanced & Smart)</option>
-            <option value="quaasx-cognitive-ultra">quaasx-cognitive-ultra (Scientific Specialization)</option>
-            <option value="quaasx-cognitive-speed">quaasx-cognitive-speed (Fast Execution)</option>
-          </select>
-        </div>
+          <!-- Preferences Tab -->
+          <div id="tab-preferences" class="settings-tab-panel">
+            <div class="setting-group">
+              <label>Workspace Preferences</label>
+              <p class="setting-help">Configure system calculation and display choices.</p>
+              
+              <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 10px;">
+                <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; text-transform: none; font-weight: normal; font-size: 13px; color: var(--text-primary);">
+                  <input type="checkbox" id="pref-auto-calc" checked style="accent-color: var(--accent-primary);">
+                  Auto-calculate formulas on cell edit
+                </label>
+                <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; text-transform: none; font-weight: normal; font-size: 13px; color: var(--text-primary);">
+                  <input type="checkbox" id="pref-scroll-lock" style="accent-color: var(--accent-primary);">
+                  Auto-scroll telemetry logs to bottom
+                </label>
+                
+                <div style="display: flex; flex-direction: column; gap: 6px; margin-top: 8px;">
+                  <label for="pref-default-view" style="font-size: 12px; font-weight: 600; color: var(--text-secondary); text-transform: none;">Default Spreadsheet View Mode</label>
+                  <select id="pref-default-view" class="settings-select" style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 8px 12px; color: var(--text-primary); font-family: inherit; font-size: 12px; outline: none;">
+                    <option value="table">Table View</option>
+                    <option value="charts">Charts View</option>
+                    <option value="split">Split View</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
 
-        <div class="setting-group danger-zone">
-          <label>Danger Zone</label>
-          <p class="setting-help">Irreversible database actions.</p>
-          <button id="clear-data-btn" class="danger-btn">Clear All Chats & Projects</button>
+          <!-- Danger Zone Tab -->
+          <div id="tab-danger" class="settings-tab-panel">
+            <div class="setting-group danger-zone" style="border: 1px solid rgba(239, 68, 68, 0.2); background: rgba(239, 68, 68, 0.02); padding: 20px; border-radius: var(--radius-md);">
+              <label style="color: var(--error);">Danger Zone</label>
+              <p class="setting-help" style="color: rgba(239, 68, 68, 0.75);">These actions are permanent and cannot be undone.</p>
+              <button id="clear-data-btn" class="danger-btn" style="margin-top: 10px; width: 100%;">Clear All Chats, Projects & Configuration</button>
+            </div>
+          </div>
         </div>
       </div>
     </div>

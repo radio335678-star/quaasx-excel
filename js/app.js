@@ -187,6 +187,9 @@
     // Initialize resizable dividers, toggles, formula popup, and telemetry console
     initFuturisticWorkspace();
 
+    // Initialize the premium settings layout (tabs, save name, signout, sliders, etc.)
+    initPremiumSettingsLayout();
+
     // Load API key from local .env or cache, then boot projects
     loadEnvApiKey().then(function () {
       loadProjectsFromStorage();
@@ -638,7 +641,8 @@
             apiKey: (apiKey === 'server-managed') ? null : apiKey,
             prompt: messageText,
             mode: currentMode,
-            attachedFiles: attachedFilesCopy
+            attachedFiles: attachedFilesCopy,
+            temperature: parseFloat(localStorage.getItem('quaasx_engine_temperature') || '1.0')
           }),
           signal: abortController.signal
         });
@@ -1085,11 +1089,12 @@
       row.cells[colId].value = Number(newValue);
     }
 
-    // Re-evaluate all formulas on this sheet and re-render
-    if (window.FormulaEngine) {
+    // Re-evaluate all formulas on this sheet (if auto-calc is enabled) and re-render
+    var autoCalc = localStorage.getItem('pref_auto_calculate') !== 'false';
+    if (autoCalc && window.FormulaEngine) {
       window.FormulaEngine.evaluateSheet(sheet);
-      renderActiveSheet();
     }
+    renderActiveSheet();
     if (currentViewMode === 'charts' || currentViewMode === 'split') {
       renderCharts();
     }
@@ -2794,6 +2799,9 @@
         apiKeyInput.value = savedKey || '';
       }
       updateApiKeyStatus(!!savedKey);
+
+      // Sync user profile to settings UI
+      syncProfileToSettingsUI();
     }
   }
 
@@ -2827,6 +2835,228 @@
     
     if (window.logTelemetry) {
       window.logTelemetry('[SYS] Visual environment theme set to: ' + themeName, 'system');
+    }
+  }
+
+  function initPremiumSettingsLayout() {
+    // 1. Tab Switching logic
+    var tabBtns = document.querySelectorAll('.settings-tab-btn');
+    var panels = document.querySelectorAll('.settings-tab-panel');
+    
+    tabBtns.forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var targetTab = btn.dataset.tab;
+        
+        // Toggle active button
+        tabBtns.forEach(function (b) { b.classList.remove('active'); });
+        btn.classList.add('active');
+        
+        // Toggle active panel
+        panels.forEach(function (panel) {
+          var id = panel.getAttribute('id');
+          if (id === 'tab-' + targetTab) {
+            panel.classList.add('active');
+          } else {
+            panel.classList.remove('active');
+          }
+        });
+      });
+    });
+
+    // 2. Profile Display Name Save logic
+    var saveNameBtn = document.getElementById('settings-save-name-btn');
+    var nameInput = document.getElementById('settings-display-name-input');
+    
+    if (saveNameBtn && nameInput) {
+      saveNameBtn.addEventListener('click', async function () {
+        var newName = nameInput.value.trim();
+        if (!newName) return;
+        
+        saveNameBtn.disabled = true;
+        saveNameBtn.textContent = 'Saving...';
+        
+        try {
+          if (supabase && window.supabaseLoggedIn) {
+            var session = supabase.auth.session ? supabase.auth.session() : null;
+            if (!session && supabase.auth.getSession) {
+              var sessionRes = await supabase.auth.getSession();
+              var user = sessionRes.data && sessionRes.data.session ? sessionRes.data.session.user : null;
+              if (user) {
+                var { error } = await supabase
+                  .from('user_profiles')
+                  .update({ display_name: newName })
+                  .eq('user_id', user.id);
+                if (error) throw error;
+                localStorage.setItem('user_display_name', newName);
+              }
+            } else {
+              var user = session ? session.user : null;
+              if (user) {
+                var { error } = await supabase
+                  .from('user_profiles')
+                  .update({ display_name: newName })
+                  .eq('user_id', user.id);
+                if (error) throw error;
+                localStorage.setItem('user_display_name', newName);
+              }
+            }
+          } else {
+            localStorage.setItem('guest_display_name', newName);
+          }
+          
+          // Update header avatar & details UI
+          var avatarEl = document.getElementById('user-avatar-initials');
+          if (avatarEl) avatarEl.textContent = newName.charAt(0).toUpperCase();
+          
+          var profileAvatar = document.getElementById('settings-profile-avatar');
+          var profileName = document.getElementById('settings-profile-name');
+          if (profileAvatar) profileAvatar.textContent = newName.charAt(0).toUpperCase();
+          if (profileName) profileName.textContent = newName;
+          
+          if (window.logTelemetry) {
+            window.logTelemetry('[SYS] Profile display name updated to: ' + newName, 'success-line');
+          }
+          
+          saveNameBtn.textContent = 'Saved!';
+          setTimeout(function () {
+            saveNameBtn.textContent = 'Save Name';
+            saveNameBtn.disabled = false;
+          }, 1500);
+        } catch (err) {
+          console.error('Failed to save profile name:', err);
+          alert('Failed to save profile name: ' + err.message);
+          saveNameBtn.textContent = 'Save Name';
+          saveNameBtn.disabled = false;
+        }
+      });
+    }
+
+    // 3. Application Sign Out logic
+    var signoutBtn = document.getElementById('settings-signout-btn');
+    if (signoutBtn) {
+      signoutBtn.addEventListener('click', async function () {
+        if (confirm('Are you sure you want to sign out of the application?')) {
+          closeSettingsModal();
+          
+          if (supabase && window.supabaseLoggedIn) {
+            try {
+              await supabase.auth.signOut();
+            } catch (err) {
+              console.error('Error signing out:', err);
+            }
+            // Clear local cached details
+            localStorage.removeItem('user_display_name');
+            localStorage.removeItem('quaasx_subscription_plan');
+            localStorage.removeItem('quaasx_tokens_used');
+            window.supabaseLoggedIn = false;
+          } else {
+            // Guest mode reset
+            localStorage.removeItem('guest_display_name');
+          }
+          
+          // Force reload or trigger auth overlay login screen
+          location.reload();
+        }
+      });
+    }
+
+    // 4. Engine Temperature Slider logic
+    var tempSlider = document.getElementById('settings-temperature');
+    var tempVal = document.getElementById('settings-temperature-value');
+    
+    var savedTemp = localStorage.getItem('quaasx_engine_temperature') || '1.0';
+    if (tempSlider && tempVal) {
+      tempSlider.value = savedTemp;
+      tempVal.textContent = savedTemp;
+      
+      tempSlider.addEventListener('input', function () {
+        var val = parseFloat(tempSlider.value).toFixed(1);
+        tempVal.textContent = val;
+        localStorage.setItem('quaasx_engine_temperature', val);
+      });
+    }
+
+    // 5. Preferences inputs sync
+    var autoCalcCheck = document.getElementById('pref-auto-calc');
+    var scrollLockCheck = document.getElementById('pref-scroll-lock');
+    var defaultViewSelect = document.getElementById('pref-default-view');
+    
+    // Load presets
+    var savedAutoCalc = localStorage.getItem('pref_auto_calculate') !== 'false'; // default true
+    var savedScrollLock = localStorage.getItem('pref_scroll_lock') === 'true'; // default false
+    var savedDefaultView = localStorage.getItem('pref_default_view') || 'table';
+    
+    if (autoCalcCheck) {
+      autoCalcCheck.checked = savedAutoCalc;
+      autoCalcCheck.addEventListener('change', function () {
+        localStorage.setItem('pref_auto_calculate', autoCalcCheck.checked);
+      });
+    }
+    
+    if (scrollLockCheck) {
+      scrollLockCheck.checked = savedScrollLock;
+      // Sync initial scroll lock state with global variable
+      isScrollLocked = savedScrollLock;
+      if (btnScrollLock) {
+        btnScrollLock.textContent = isScrollLocked ? 'Scroll Lock 🔒' : 'Scroll Lock 🔓';
+        btnScrollLock.classList.toggle('active', isScrollLocked);
+      }
+      
+      scrollLockCheck.addEventListener('change', function () {
+        var locked = scrollLockCheck.checked;
+        localStorage.setItem('pref_scroll_lock', locked);
+        isScrollLocked = locked;
+        if (btnScrollLock) {
+          btnScrollLock.textContent = locked ? 'Scroll Lock 🔒' : 'Scroll Lock 🔓';
+          btnScrollLock.classList.toggle('active', locked);
+        }
+      });
+    }
+    
+    if (defaultViewSelect) {
+      defaultViewSelect.value = savedDefaultView;
+      defaultViewSelect.addEventListener('change', function () {
+        localStorage.setItem('pref_default_view', defaultViewSelect.value);
+        currentViewMode = defaultViewSelect.value;
+      });
+    }
+  }
+
+  function syncProfileToSettingsUI() {
+    var avatarEl = document.getElementById('settings-profile-avatar');
+    var nameEl = document.getElementById('settings-profile-name');
+    var emailEl = document.getElementById('settings-profile-email');
+    var inputEl = document.getElementById('settings-display-name-input');
+
+    if (supabase && window.supabaseLoggedIn) {
+      var session = supabase.auth.session ? supabase.auth.session() : null;
+      if (!session && supabase.auth.getSession) {
+        supabase.auth.getSession().then(function(res) {
+          var user = res.data && res.data.session ? res.data.session.user : null;
+          if (user) {
+            if (emailEl) emailEl.textContent = user.email;
+            var cachedName = localStorage.getItem('user_display_name') || user.email.split('@')[0];
+            if (nameEl) nameEl.textContent = cachedName;
+            if (inputEl) inputEl.value = cachedName;
+            if (avatarEl) avatarEl.textContent = cachedName.charAt(0).toUpperCase();
+          }
+        });
+      } else {
+        var user = session ? session.user : null;
+        if (user) {
+          if (emailEl) emailEl.textContent = user.email;
+          var cachedName = localStorage.getItem('user_display_name') || user.email.split('@')[0];
+          if (nameEl) nameEl.textContent = cachedName;
+          if (inputEl) inputEl.value = cachedName;
+          if (avatarEl) avatarEl.textContent = cachedName.charAt(0).toUpperCase();
+        }
+      }
+    } else {
+      if (emailEl) emailEl.textContent = 'local-guest@quaasx.com';
+      var cachedName = localStorage.getItem('guest_display_name') || 'Guest User';
+      if (nameEl) nameEl.textContent = cachedName;
+      if (inputEl) inputEl.value = cachedName;
+      if (avatarEl) avatarEl.textContent = cachedName.charAt(0).toUpperCase();
     }
   }
 
@@ -3157,6 +3387,11 @@
             tokenLimit = profile.token_limit || tokenLimit;
             localStorage.setItem('quaasx_subscription_plan', subscriptionPlan);
             localStorage.setItem('quaasx_tokens_used', tokensUsed);
+            if (profile.display_name) {
+              localStorage.setItem('user_display_name', profile.display_name);
+              var avatarEl = document.getElementById('user-avatar-initials');
+              if (avatarEl) avatarEl.textContent = profile.display_name.charAt(0).toUpperCase();
+            }
             updateSubscriptionUI();
           }
         } catch (err) {
