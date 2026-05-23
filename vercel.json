@@ -1,4 +1,12 @@
 {
   "version": 2,
-  "cleanUrls": true
+  "buildCommand": "echo 'No build needed'",
+  "outputDirectory": ".",
+  "rewrites": [
+    { "source": "/api/config", "destination": "/api/config.js" },
+    { "source": "/api/proxy", "destination": "/api/proxy.js" },
+    { "source": "/api/research", "destination": "/api/research.js" },
+    { "source": "/api/parse-document", "destination": "/api/parse-document.js" },
+    { "source": "/api/generate-sheet", "destination": "/api/generate-sheet.js" }
+  ]
 }
