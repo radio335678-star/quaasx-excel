@@ -4,7 +4,8 @@
     { "src": "api/*.js", "use": "@vercel/node" },
     { "src": "js/*.js", "use": "@vercel/static" },
     { "src": "css/*.css", "use": "@vercel/static" },
-    { "src": "index.html", "use": "@vercel/static" }
+    { "src": "index.html", "use": "@vercel/static" },
+    { "src": "googlef3d38e0c33d9aa00.html", "use": "@vercel/static" }
   ],
   "routes": [
     { "src": "/api/config", "dest": "/api/config.js" },
