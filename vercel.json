@@ -5,5 +5,13 @@
     { "src": "js/*.js", "use": "@vercel/static" },
     { "src": "css/*.css", "use": "@vercel/static" },
     { "src": "index.html", "use": "@vercel/static" }
+  ],
+  "routes": [
+    { "src": "/api/config", "dest": "/api/config.js" },
+    { "src": "/api/generate-sheet", "dest": "/api/generate-sheet.js" },
+    { "src": "/api/parse-document", "dest": "/api/parse-document.js" },
+    { "src": "/api/proxy", "dest": "/api/proxy.js" },
+    { "src": "/api/research", "dest": "/api/research.js" },
+    { "src": "/(.*)", "dest": "/$1" }
   ]
 }

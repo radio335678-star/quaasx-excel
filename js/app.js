@@ -1121,44 +1121,47 @@
       console.log('Production config check skipped:', err.message);
     }
 
+    var isProduction = window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1';
     var moonshotKey = null;
     var nvidiaKey = null;
-    try {
-      var response = await fetch('.env');
-      if (response.ok) {
-        var text = await response.text();
-        
-        // Parse Moonshot Key
-        var moonshotMatch = text.match(/MOONSHOT_API_KEY\s*=\s*(.*)/) || text.match(/QUAASX_API_KEY\s*=\s*(.*)/);
-        if (moonshotMatch && moonshotMatch[1]) {
-          var cleanMoonshot = moonshotMatch[1].trim().replace(/['"]/g, '');
-          if (cleanMoonshot !== 'your_actual_moonshot_api_key_here') {
-            moonshotKey = cleanMoonshot;
+    if (!isProduction) {
+      try {
+        var response = await fetch('.env');
+        if (response.ok) {
+          var text = await response.text();
+          
+          // Parse Moonshot Key
+          var moonshotMatch = text.match(/MOONSHOT_API_KEY\s*=\s*(.*)/) || text.match(/QUAASX_API_KEY\s*=\s*(.*)/);
+          if (moonshotMatch && moonshotMatch[1]) {
+            var cleanMoonshot = moonshotMatch[1].trim().replace(/['"]/g, '');
+            if (cleanMoonshot !== 'your_actual_moonshot_api_key_here') {
+              moonshotKey = cleanMoonshot;
+            }
+          }
+
+          // Parse NVIDIA Key
+          var nvidiaMatch = text.match(/NVIDIA_API_KEY\s*=\s*(.*)/);
+          if (nvidiaMatch && nvidiaMatch[1]) {
+            var cleanNvidia = nvidiaMatch[1].trim().replace(/['"]/g, '');
+            if (cleanNvidia !== 'nvapi-your_actual_nvidia_api_key_here') {
+              nvidiaKey = cleanNvidia;
+            }
+          }
+
+          // Parse Supabase Credentials
+          var supabaseUrlMatch = text.match(/SUPABASE_URL\s*=\s*(.*)/);
+          var supabaseKeyMatch = text.match(/SUPABASE_ANON_KEY\s*=\s*(.*)/);
+          if (supabaseUrlMatch && supabaseUrlMatch[1]) {
+            localStorage.setItem('supabase_url', supabaseUrlMatch[1].trim().replace(/['"]/g, ''));
+          }
+          if (supabaseKeyMatch && supabaseKeyMatch[1]) {
+            localStorage.setItem('supabase_anon_key', supabaseKeyMatch[1].trim().replace(/['"]/g, ''));
           }
         }
-
-        // Parse NVIDIA Key
-        var nvidiaMatch = text.match(/NVIDIA_API_KEY\s*=\s*(.*)/);
-        if (nvidiaMatch && nvidiaMatch[1]) {
-          var cleanNvidia = nvidiaMatch[1].trim().replace(/['"]/g, '');
-          if (cleanNvidia !== 'nvapi-your_actual_nvidia_api_key_here') {
-            nvidiaKey = cleanNvidia;
-          }
+      } catch (e) {
+        if (window.logTelemetry) {
+          window.logTelemetry('[SYS] Local .env file could not be fetched (CORS or file:// restriction).', 'system');
         }
-
-        // Parse Supabase Credentials
-        var supabaseUrlMatch = text.match(/SUPABASE_URL\s*=\s*(.*)/);
-        var supabaseKeyMatch = text.match(/SUPABASE_ANON_KEY\s*=\s*(.*)/);
-        if (supabaseUrlMatch && supabaseUrlMatch[1]) {
-          localStorage.setItem('supabase_url', supabaseUrlMatch[1].trim().replace(/['"]/g, ''));
-        }
-        if (supabaseKeyMatch && supabaseKeyMatch[1]) {
-          localStorage.setItem('supabase_anon_key', supabaseKeyMatch[1].trim().replace(/['"]/g, ''));
-        }
-      }
-    } catch (e) {
-      if (window.logTelemetry) {
-        window.logTelemetry('[SYS] Local .env file could not be fetched (CORS or file:// restriction).', 'system');
       }
     }
 
@@ -2914,6 +2917,14 @@
     var url = localStorage.getItem('supabase_url');
     var key = localStorage.getItem('supabase_anon_key');
 
+    // Fallback to default public credentials if not available via API or localStorage
+    if (!url || !key) {
+      url = 'https://zleyyfdyguvtmthoizha.supabase.co';
+      key = 'sb_publishable_HHocZZbF1h16BshOh3A4aw_uH-3j3d9';
+      localStorage.setItem('supabase_url', url);
+      localStorage.setItem('supabase_anon_key', key);
+    }
+
     if (!url || !key || !window.supabase || url.includes('your_supabase_project_url_here') || key.includes('your_supabase_anon_key_here')) {
       isOfflineMode = true;
       window.supabaseActive = false;
@@ -3412,8 +3423,8 @@
 
     function showAuthPanel(panel) {
       if (panelMain) panelMain.style.display = panel === 'main' ? 'block' : 'none';
-      if (panelConfirm) panelConfirm.style.display = panel === 'confirm' ? 'block' : 'none';
-      if (panelReset) panelReset.style.display = panel === 'reset' ? 'block' : 'none';
+      if (panelConfirm) panelConfirm.style.display = panel === 'confirm' ? 'flex' : 'none';
+      if (panelReset) panelReset.style.display = panel === 'reset' ? 'flex' : 'none';
       if (authTabs) authTabs.style.display = panel === 'main' ? 'flex' : 'none';
       if (oauthSection) oauthSection.style.display = panel === 'main' ? 'block' : 'none';
       
@@ -3492,8 +3503,8 @@
       subtitle.textContent = 'Register to sync projects, usage, and subscriptions.';
       submitBtn.querySelector('.btn-text').textContent = 'Create Account';
       passwordInput.autocomplete = 'new-password';
-      if (confirmGroup) confirmGroup.style.display = 'block';
-      if (passwordRules) passwordRules.style.display = 'block';
+      if (confirmGroup) confirmGroup.style.display = 'flex';
+      if (passwordRules) passwordRules.style.display = 'grid';
       if (resendBtn) resendBtn.style.display = 'none';
       if (forgotBtn) forgotBtn.style.display = 'none';
       if (errorMsg) errorMsg.style.display = 'none';

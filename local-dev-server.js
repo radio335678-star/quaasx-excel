@@ -81,6 +81,30 @@ const server = http.createServer((req, res) => {
     return;
   }
 
+  // 1.2. Handle API Config local proxying
+  if (req.url === '/api/config') {
+    // Mock the Express-like response helpers used by Vercel Node runtime
+    res.status = (statusCode) => {
+      res.statusCode = statusCode;
+      return res;
+    };
+    res.json = (data) => {
+      res.setHeader('Content-Type', 'application/json');
+      res.end(JSON.stringify(data));
+    };
+
+    try {
+      // Clear require cache for development changes
+      delete require.cache[require.resolve('./api/config.js')];
+      const configHandler = require('./api/config.js');
+      configHandler(req, res);
+    } catch (err) {
+      res.writeHead(500, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: err.message }));
+    }
+    return;
+  }
+
   // 1.5. Handle Web Research & Scraping Proxy (DuckDuckGo Search)
   if (req.url === '/api/research' && req.method === 'POST') {
     let body = '';
