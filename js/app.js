@@ -452,7 +452,7 @@
     }
 
     // Theme option clicks
-    document.querySelectorAll('.theme-option-btn, .landing-theme-btn').forEach(function (btn) {
+    document.querySelectorAll('.theme-option-btn, .landing-theme-btn, .theme-dot').forEach(function (btn) {
       btn.addEventListener('click', function () {
         var selectedTheme = btn.dataset.theme;
         applyTheme(selectedTheme);
@@ -2793,8 +2793,8 @@
     // Persist to storage
     localStorage.setItem('quaasx_visual_theme', themeName);
     
-    // Update theme selection buttons active state
-    document.querySelectorAll('.theme-option-btn').forEach(function (btn) {
+    // Update theme selection buttons and dots active state
+    document.querySelectorAll('.theme-option-btn, .theme-dot').forEach(function (btn) {
       btn.classList.toggle('active', btn.dataset.theme === themeName);
     });
     

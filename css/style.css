@@ -3283,8 +3283,8 @@ body {
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: rgba(0, 0, 0, 0.65);
-  backdrop-filter: blur(12px);
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(20px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -3293,13 +3293,22 @@ body {
 }
 
 .settings-modal-card {
-  width: 440px;
-  background: linear-gradient(145deg, rgba(20, 20, 35, 0.95), rgba(10, 10, 20, 0.98));
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-lg);
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 30px rgba(124, 58, 237, 0.15);
+  width: 100%;
+  max-width: 900px;
+  height: 100%;
+  background: var(--bg-secondary);
+  border-left: 1px solid var(--border-color);
+  border-right: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 0 60px rgba(0, 0, 0, 0.7);
   overflow: hidden;
-  animation: scaleInModal 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  animation: slideInUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes slideInUp {
+  from { transform: translateY(30px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
 }
 
 @keyframes fadeInModal {
@@ -3344,10 +3353,43 @@ body {
 }
 
 .settings-modal-body {
-  padding: 20px;
+  padding: 30px;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 24px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+/* Sidebar Theme Switcher */
+.activity-theme-dots {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  padding: 0 4px;
+}
+
+.theme-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), border-color 0.2s ease, box-shadow 0.2s ease;
+  position: relative;
+}
+
+.theme-dot:hover {
+  transform: scale(1.3);
+  filter: brightness(1.2);
+}
+
+.theme-dot.active {
+  border-color: #ffffff;
+  transform: scale(1.3);
+  box-shadow: 0 0 12px currentColor !important;
 }
 
 .setting-group {
