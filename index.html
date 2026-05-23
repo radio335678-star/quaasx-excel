@@ -612,9 +612,9 @@
       <!-- PROJECT SIDEBAR -->
       <aside class="project-sidebar" id="project-sidebar">
         <div class="sidebar-header">
-          <button class="new-chat-btn" id="new-project-btn" title="New Chat">
+          <button class="new-chat-btn" id="new-project-btn" title="New Project">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-            <span>New Chat</span>
+            <span>New Project</span>
           </button>
         </div>
         <div class="project-list" id="project-list"></div>
@@ -627,18 +627,23 @@
       <section class="chat-panel">
         <div class="panel-header">
           <h2>💬 Chat</h2>
-          <div class="mode-selector">
-            <button class="mode-btn active" data-mode="build" title="Generate or modify the spreadsheet directly">
-              <span class="mode-icon">⚡</span>
-              <span class="mode-label">Build</span>
-            </button>
-            <button class="mode-btn" data-mode="plan" title="Get a step-by-step plan before changes">
-              <span class="mode-icon">📋</span>
-              <span class="mode-label">Plan</span>
-            </button>
-            <button class="mode-btn" data-mode="ask" title="Ask / Discuss ideas: i will help u to make it to reality">
-              <span class="mode-icon">💡</span>
-              <span class="mode-label">Ask</span>
+          <div style="display: flex; align-items: center; gap: 6px;">
+            <div class="mode-selector">
+              <button class="mode-btn active" data-mode="build" title="Generate or modify the spreadsheet directly">
+                <span class="mode-icon">⚡</span>
+                <span class="mode-label">Build</span>
+              </button>
+              <button class="mode-btn" data-mode="plan" title="Get a step-by-step plan before changes">
+                <span class="mode-icon">📋</span>
+                <span class="mode-label">Plan</span>
+              </button>
+              <button class="mode-btn" data-mode="ask" title="Ask / Discuss ideas: i will help u to make it to reality">
+                <span class="mode-icon">💡</span>
+                <span class="mode-label">Ask</span>
+              </button>
+            </div>
+            <button id="new-chat-keep-sheet-btn" class="header-action-btn" title="New Chat (Keep Spreadsheet)">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
             </button>
           </div>
         </div>

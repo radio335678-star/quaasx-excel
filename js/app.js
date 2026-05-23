@@ -2094,6 +2094,29 @@
     if (newBtn) {
       newBtn.addEventListener('click', handleNewProject);
     }
+
+    // Wire chat header new-chat (keep spreadsheet) button
+    var newChatKeepSheetBtn = document.getElementById('new-chat-keep-sheet-btn');
+    if (newChatKeepSheetBtn) {
+      newChatKeepSheetBtn.addEventListener('click', function () {
+        if (isGenerating) return;
+        if (confirm('Start a new chat session? This will clear the chat history but keep your current spreadsheet.')) {
+          // Clear history
+          chatHistory = [];
+          chatDisplayMessages = [];
+          
+          // Re-render chat display (shows welcome screen)
+          renderChatFromDisplayMessages();
+          
+          // Save project
+          saveCurrentProject();
+          
+          if (window.logTelemetry) {
+            window.logTelemetry('[SYS] Started a new chat session. Spreadsheet preserved.', 'system');
+          }
+        }
+      });
+    }
   }
 
   // ========== VIEW TOGGLE HANDLER ==========

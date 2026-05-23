@@ -383,6 +383,28 @@ body {
   white-space: nowrap;
 }
 
+.header-action-btn {
+  background: var(--bg-active);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  width: 26px;
+  height: 26px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  padding: 0;
+}
+
+.header-action-btn:hover {
+  color: var(--text-primary);
+  border-color: var(--accent-primary);
+  background: var(--bg-hover);
+  box-shadow: 0 0 8px var(--accent-glow);
+}
+
 .chat-messages {
   flex: 1;
   overflow-y: auto;
