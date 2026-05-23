@@ -978,11 +978,30 @@
 
       window.startQuaasxBootSequence = startBootSequence;
 
-      if (window.supabaseActive && !window.supabaseLoggedIn) {
-        authOverlay.style.display = 'flex';
-        window.triggerBootSequence = startBootSequence;
+      var isProduction = window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1';
+
+      if (isProduction) {
+        // In production, we MUST have a Supabase connection and the user MUST be logged in
+        if (!window.supabaseLoggedIn) {
+          authOverlay.style.display = 'flex';
+          window.triggerBootSequence = startBootSequence;
+          
+          // Force hide guest mode elements just in case
+          var guestBtn = document.getElementById('auth-guest-btn');
+          var guestDivider = document.getElementById('auth-guest-divider');
+          if (guestBtn) guestBtn.style.display = 'none';
+          if (guestDivider) guestDivider.style.display = 'none';
+        } else {
+          startBootSequence();
+        }
       } else {
-        startBootSequence();
+        // Local/development mode: fall back to guest mode if Supabase is inactive
+        if (window.supabaseActive && !window.supabaseLoggedIn) {
+          authOverlay.style.display = 'flex';
+          window.triggerBootSequence = startBootSequence;
+        } else {
+          startBootSequence();
+        }
       }
     });
   </script>

@@ -3416,8 +3416,15 @@
       if (panelReset) panelReset.style.display = panel === 'reset' ? 'block' : 'none';
       if (authTabs) authTabs.style.display = panel === 'main' ? 'flex' : 'none';
       if (oauthSection) oauthSection.style.display = panel === 'main' ? 'block' : 'none';
-      if (guestDivider) guestDivider.style.display = panel === 'main' ? 'flex' : 'none';
-      if (guestBtn) guestBtn.style.display = panel === 'main' ? 'block' : 'none';
+      
+      var isProduction = window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1';
+      if (isProduction) {
+        if (guestDivider) guestDivider.style.display = 'none';
+        if (guestBtn) guestBtn.style.display = 'none';
+      } else {
+        if (guestDivider) guestDivider.style.display = panel === 'main' ? 'flex' : 'none';
+        if (guestBtn) guestBtn.style.display = panel === 'main' ? 'block' : 'none';
+      }
     }
 
     window.showAuthResetPanel = function () {
@@ -3755,6 +3762,11 @@
     });
 
     guestBtn.addEventListener('click', function () {
+      var isProduction = window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1';
+      if (isProduction) {
+        showAuthError('Guest mode is disabled in production. Please sign in or create an account.');
+        return;
+      }
       overlay.style.display = 'none';
       if (window.triggerBootSequence) {
         window.triggerBootSequence();
