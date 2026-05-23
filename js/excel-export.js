@@ -261,7 +261,261 @@
     saveAs(blob, fileName);
   }
 
+  /**
+   * Import spreadsheet state from an .xlsx file using ExcelJS.
+   * @param {ArrayBuffer} arrayBuffer - The uploaded Excel file buffer
+   * @returns {Promise<Object>} - Mapped spreadsheetState object
+   */
+  async function importFromExcel(arrayBuffer) {
+    if (window.logTelemetry) {
+      window.logTelemetry('[SYS] Loading ExcelJS workbook from uploaded buffer...', 'system');
+    }
+
+    var workbook = new ExcelJS.Workbook();
+    await workbook.xlsx.load(arrayBuffer);
+
+    var parsedState = {
+      title: 'Imported Spreadsheet',
+      sheets: []
+    };
+
+    workbook.worksheets.forEach(function (worksheet, wIdx) {
+      var colCount = worksheet.columnCount;
+      var rowCount = worksheet.rowCount;
+
+      if (window.logTelemetry) {
+        window.logTelemetry('[SYS] Parsing sheet "' + worksheet.name + '" (' + colCount + ' columns, ' + rowCount + ' rows)...', 'system');
+      }
+
+      // Generate column mappings (Excel letters -> col_1, col_2...)
+      var colLetterMap = {};
+      var columns = [];
+      for (var c = 1; c <= colCount; c++) {
+        var letter = window.FormulaEngine.colIdxToLetter(c - 1);
+        var colId = 'col_' + c;
+        colLetterMap[letter] = colId;
+
+        // Try to get column title from Row 1
+        var headerCell = worksheet.getCell(1, c);
+        var headerVal = headerCell.value;
+        var title = '';
+        if (headerVal !== null && headerVal !== undefined) {
+          title = typeof headerVal === 'object' && headerVal.richText 
+            ? headerVal.richText.map(function(t) { return t.text; }).join('')
+            : String(headerVal).trim();
+        }
+        if (!title) {
+          title = 'Column ' + letter;
+        }
+
+        // Guess format of column based on cell formats
+        var format = 'text';
+        if (rowCount > 1) {
+          var sampleCell = worksheet.getCell(2, c);
+          if (sampleCell.numFmt) {
+            format = guessFormatFromNumFmt(sampleCell.numFmt);
+          } else if (typeof sampleCell.value === 'number') {
+            format = 'number';
+          }
+        }
+
+        columns.push({
+          id: colId,
+          title: title,
+          width: 15,
+          format: format
+        });
+      }
+
+      var rows = [];
+      var summaryRows = [];
+
+      // Helper to translate Excel formula references to column references
+      function translateExcelFormula(rawFormula) {
+        if (!rawFormula) return '';
+        var formula = rawFormula.replace(/\$/g, '');
+        
+        // Translate ranges like A2:A10 -> @col_1
+        formula = formula.replace(/\b([A-Z]+)\d*:([A-Z]+)\d*\b/g, function(match, col1, col2) {
+          if (col1 === col2 && colLetterMap[col1]) {
+            return '@' + colLetterMap[col1];
+          }
+          return match;
+        });
+        
+        // Translate single cell coordinates like A2 -> col_1
+        formula = formula.replace(/\b([A-Z]+)(\d+)\b/g, function(match, col, row) {
+          if (colLetterMap[col]) {
+            return colLetterMap[col];
+          }
+          return match;
+        });
+        
+        return formula;
+      }
+
+      // Check if a row is a candidate summary/aggregate row
+      function checkIsSummaryRow(rowObj, rIdx, totalRows) {
+        if (rIdx < 2) return false; // Row 1 is header
+        if (rIdx < totalRows - 5) return false; // Must be in the bottom part of sheet
+        
+        for (var colId in rowObj.cells) {
+          var cell = rowObj.cells[colId];
+          // If any cell contains a formula that references a column range (@col_X)
+          if (cell.formula && cell.formula.includes('@')) {
+            return true;
+          }
+          // If first column or label contains "total", "average", etc.
+          if (cell.value && typeof cell.value === 'string' && /total|average|mean|median|summary|grand/i.test(cell.value)) {
+            return true;
+          }
+        }
+        return false;
+      }
+
+      // Read rows from 2 onwards
+      for (var r = 2; r <= rowCount; r++) {
+        var rowObj = {
+          id: 'row_' + r,
+          cells: {}
+        };
+        var hasValues = false;
+
+        for (var c = 1; c <= colCount; c++) {
+          var colId = 'col_' + c;
+          var cell = worksheet.getCell(r, c);
+          var cellVal = cell.value;
+          
+          if (cellVal === null || cellVal === undefined) {
+            continue;
+          }
+
+          var value = '';
+          var formula = '';
+
+          if (cellVal && typeof cellVal === 'object' && cellVal.formula) {
+            formula = translateExcelFormula(cellVal.formula);
+            value = cellVal.result !== undefined ? cellVal.result : '';
+          } else {
+            value = cellVal;
+          }
+
+          if (value !== '' && value !== null && value !== undefined) {
+            hasValues = true;
+          }
+
+          var cellData = { value: value };
+          if (formula) {
+            cellData.formula = formula;
+          }
+
+          // Parse style
+          var style = getCellStyle(cell);
+          if (style) {
+            cellData.style = style;
+          }
+
+          rowObj.cells[colId] = cellData;
+        }
+
+        // Skip completely empty rows
+        if (!hasValues) {
+          continue;
+        }
+
+        // Categorize row
+        if (checkIsSummaryRow(rowObj, r, rowCount)) {
+          // Add label if found in first column
+          var label = '';
+          var firstCell = rowObj.cells['col_1'];
+          if (firstCell && firstCell.value && typeof firstCell.value === 'string') {
+            label = firstCell.value;
+          }
+          summaryRows.push({
+            label: label || 'Summary',
+            cells: rowObj.cells,
+            style: { bold: true }
+          });
+        } else {
+          rows.push(rowObj);
+        }
+      }
+
+      parsedState.sheets.push({
+        name: worksheet.name || 'Sheet' + (wIdx + 1),
+        columns: columns,
+        rows: rows,
+        summaryRows: summaryRows,
+        headerStyle: { bg: '#1e1e30', color: '#ffffff', bold: true }
+      });
+    });
+
+    if (parsedState.sheets.length > 0) {
+      parsedState.title = parsedState.sheets[0].name || 'Imported Spreadsheet';
+    }
+
+    if (window.logTelemetry) {
+      window.logTelemetry('[SYS] ExcelJS parsing complete. Constructed active spreadsheet state.', 'success-line');
+    }
+
+    return parsedState;
+  }
+
+  function getCellStyle(cell) {
+    var style = {};
+    if (cell.font) {
+      if (cell.font.bold) style.bold = true;
+      if (cell.font.italic) style.italic = true;
+      var color = parseExcelColor(cell.font.color);
+      if (color) style.color = color;
+    }
+    if (cell.fill) {
+      var bg = getCellBgColor(cell.fill);
+      if (bg) style.bg = bg;
+    }
+    if (cell.alignment && cell.alignment.horizontal) {
+      style.align = cell.alignment.horizontal;
+    }
+    return Object.keys(style).length > 0 ? style : null;
+  }
+
+  function parseExcelColor(colorObj) {
+    if (!colorObj) return null;
+    var argb = null;
+    if (typeof colorObj === 'string') {
+      argb = colorObj;
+    } else if (colorObj.argb) {
+      argb = colorObj.argb;
+    }
+    if (!argb) return null;
+    if (argb.length === 8) {
+      return '#' + argb.substring(2).toLowerCase();
+    }
+    if (argb.length === 6) {
+      return '#' + argb.toLowerCase();
+    }
+    return null;
+  }
+
+  function getCellBgColor(fill) {
+    if (!fill) return null;
+    if (fill.type === 'pattern' && fill.fgColor) {
+      return parseExcelColor(fill.fgColor);
+    }
+    return null;
+  }
+
+  function guessFormatFromNumFmt(numFmt) {
+    if (!numFmt) return 'text';
+    var lower = numFmt.toLowerCase();
+    if (lower.indexOf('$') !== -1 || lower.indexOf('₹') !== -1 || lower.indexOf('€') !== -1) return 'currency';
+    if (lower.indexOf('%') !== -1) return 'percentage';
+    if (lower.indexOf('0') !== -1 || lower.indexOf('#') !== -1) return 'number';
+    return 'text';
+  }
+
   window.ExcelExport = {
-    exportToExcel: exportToExcel
+    exportToExcel: exportToExcel,
+    importFromExcel: importFromExcel
   };
 })();

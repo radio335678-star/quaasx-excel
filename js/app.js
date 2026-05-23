@@ -56,6 +56,8 @@
   var sendBtn;
   var sheetTabs;
   var downloadBtn;
+  var uploadXlsxBtn;
+  var uploadXlsxInput;
   var spreadsheetContainer;
   var emptyState;
   var loadingIndicator;
@@ -115,6 +117,8 @@
     sendBtn = document.getElementById('send-btn');
     sheetTabs = document.getElementById('sheet-tabs');
     downloadBtn = document.getElementById('download-btn');
+    uploadXlsxBtn = document.getElementById('upload-xlsx-btn');
+    uploadXlsxInput = document.getElementById('upload-xlsx-input');
     spreadsheetContainer = document.getElementById('spreadsheet-container');
     emptyState = document.getElementById('empty-state');
     loadingIndicator = document.getElementById('loading-indicator');
@@ -345,6 +349,129 @@
         window.ExcelExport.exportToExcel(spreadsheetState);
       }
     });
+
+    // Upload Excel button click triggers file input click
+    if (uploadXlsxBtn && uploadXlsxInput) {
+      uploadXlsxBtn.addEventListener('click', function () {
+        uploadXlsxInput.click();
+      });
+
+      // Handle Excel file selection
+      uploadXlsxInput.addEventListener('change', async function (e) {
+        var file = e.target.files[0];
+        if (!file) return;
+
+        if (window.logTelemetry) {
+          window.logTelemetry('[SYS] Excel import pipeline triggered for file: ' + file.name, 'api-info');
+        }
+
+        // Show compiling overlay or spinner
+        if (compilingOverlay) {
+          compilingOverlay.style.display = 'flex';
+          var statusLabel = compilingOverlay.querySelector('.compiling-title');
+          if (statusLabel) statusLabel.textContent = 'Importing Excel Sheet...';
+          var subtitleLabel = compilingOverlay.querySelector('.compiling-subtitle');
+          if (subtitleLabel) subtitleLabel.textContent = 'Parsing worksheets, cells, and formatting...';
+        }
+
+        try {
+          var reader = new FileReader();
+          var fileLoadPromise = new Promise(function (resolve, reject) {
+            reader.onload = function (evt) { resolve(evt.target.result); };
+            reader.onerror = function (err) { reject(err); };
+          });
+          reader.readAsArrayBuffer(file);
+
+          var arrayBuffer = await fileLoadPromise;
+          var importedState = await window.ExcelExport.importFromExcel(arrayBuffer);
+
+          if (!importedState || !importedState.sheets || importedState.sheets.length === 0) {
+            throw new Error('No worksheets or valid tabular data found in the uploaded file.');
+          }
+
+          // Evaluate formulas on all imported sheets
+          if (window.FormulaEngine) {
+            importedState.sheets.forEach(function (sh) {
+              window.FormulaEngine.evaluateSheet(sh);
+            });
+          }
+
+          // Save current project state first
+          saveCurrentProject();
+
+          // Create a new project workspace named after the imported file
+          var cleanName = file.name.replace(/\.xlsx$/i, '');
+          var projName = 'Imported: ' + cleanName;
+          var newProj = createProject(projName);
+          activeProjectId = newProj.id;
+
+          // Populate the new project's state
+          spreadsheetState = importedState;
+          chatHistory = [
+            {
+              role: 'assistant',
+              content: 'I have successfully loaded the Excel workbook "' + file.name + '". It contains sheets: ' + importedState.sheets.map(function(s) { return s.name; }).join(', ') + '. Let me know how you would like to edit, visualize, or modify this dataset!'
+            }
+          ];
+          chatDisplayMessages = [
+            {
+              type: 'assistant',
+              text: '📊 **Imported Excel Spreadsheet: ' + file.name + '** successfully!\n\nThis spreadsheet is now active in a new project workspace. You can edit cells directly or ask the AI to perform calculations, add columns, change styling, or analyze the data.'
+            }
+          ];
+
+          newProj.spreadsheetState = spreadsheetState;
+          newProj.chatHistory = chatHistory;
+          newProj.chatDisplayMessages = chatDisplayMessages;
+          newProj.activeSheetIndex = 0;
+          newProj.currentMode = 'build';
+          newProj.currentViewMode = 'table';
+
+          // Update workspace state
+          activeSheetIndex = 0;
+          currentMode = 'build';
+          currentViewMode = 'table';
+
+          // Persist to local storage
+          localStorage.setItem(ACTIVE_KEY, activeProjectId);
+          saveCurrentProject();
+
+          // Re-render user interface
+          renderProjectSidebar();
+          renderChatFromDisplayMessages();
+          updateModeButtons();
+          updateSubscriptionUI();
+          renderSheetTabs();
+          renderActiveSheet();
+
+          if (downloadBtn) downloadBtn.disabled = false;
+          if (emptyState) emptyState.style.display = 'none';
+          if (viewToggle) viewToggle.style.display = 'flex';
+          setViewMode('table');
+
+          if (window.logTelemetry) {
+            window.logTelemetry('[SYS] Imported workbook successfully activated in workspace.', 'success-line');
+          }
+        } catch (err) {
+          console.error('Import failed:', err);
+          alert('Failed to import Excel file: ' + err.message);
+          if (window.logTelemetry) {
+            window.logTelemetry('[ERR] Excel import failed: ' + err.message, 'error-line');
+          }
+        } finally {
+          if (compilingOverlay) {
+            compilingOverlay.style.display = 'none';
+            // Restore titles
+            var statusLabel = compilingOverlay.querySelector('.compiling-title');
+            if (statusLabel) statusLabel.textContent = 'Compiling Workbook Schema';
+            var subtitleLabel = compilingOverlay.querySelector('.compiling-subtitle');
+            if (subtitleLabel) subtitleLabel.textContent = 'Parsing sheets, columns, and formulas...';
+          }
+          // Reset file input value so same file can be uploaded again
+          uploadXlsxInput.value = '';
+        }
+      });
+    }
 
     // View toggle buttons
     if (viewToggle) {
