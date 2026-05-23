@@ -598,7 +598,7 @@
             'Content-Type': 'application/json'
           },
           body: JSON.stringify({
-            apiKey: apiKey,
+            apiKey: (apiKey === 'server-managed') ? null : apiKey,
             prompt: messageText,
             mode: currentMode,
             attachedFiles: attachedFilesCopy
@@ -1099,6 +1099,23 @@
         if (configData.supabaseAnonKey) {
           localStorage.setItem('supabase_anon_key', configData.supabaseAnonKey);
         }
+
+        // If server has an API key configured, store a sentinel value so the
+        // UI knows AI features are available without exposing the real key.
+        if (configData.hasServerApiKey) {
+          var providerLabel = configData.serverProvider === 'nvidia' ? 'NVIDIA API Catalog' : 'Moonshot AI';
+          // Use 'server-managed' sentinel — api/generate-sheet uses process.env key directly
+          if (!localStorage.getItem('nvidia_api_key') && !localStorage.getItem('quaasx_api_key')) {
+            if (configData.serverProvider === 'nvidia') {
+              localStorage.setItem('nvidia_api_key', 'server-managed');
+            } else {
+              localStorage.setItem('quaasx_api_key', 'server-managed');
+            }
+          }
+          if (window.logTelemetry) {
+            window.logTelemetry('[SYS] Server-side API key detected. Provider: ' + providerLabel + '. AI features enabled.', 'success-line');
+          }
+        }
       }
     } catch (err) {
       console.log('Production config check skipped:', err.message);
@@ -1158,16 +1175,24 @@
 
     var activeKey = getSavedApiKey();
     if (activeKey) {
-      if (apiKeyInput) apiKeyInput.value = activeKey;
+      // Don't show the sentinel value in the input box
+      if (activeKey === 'server-managed') {
+        if (apiKeyInput) {
+          apiKeyInput.value = '';
+          apiKeyInput.placeholder = '🔒 Server Key Active (NVIDIA)';
+        }
+      } else {
+        if (apiKeyInput) apiKeyInput.value = activeKey;
+      }
       updateApiKeyStatus(true);
-      if (window.logTelemetry) {
+      if (window.logTelemetry && activeKey !== 'server-managed') {
         var providerName = activeKey.startsWith('nvapi-') ? 'NVIDIA API Catalog' : 'Moonshot AI';
         window.logTelemetry('[SYS] API configuration resolved. Active provider: ' + providerName + '.', 'success-line');
       }
     } else {
       updateApiKeyStatus(false);
       if (window.logTelemetry) {
-        window.logTelemetry('[WARNING] Both Moonshot and NVIDIA API keys are missing. Please populate the .env file and run using a local web server (e.g. npx serve) to enable AI workbook features.', 'error-line');
+        window.logTelemetry('[WARNING] No API key configured. Enter your NVIDIA or Moonshot key in the settings panel to enable AI workbook generation.', 'error-line');
       }
     }
   }

@@ -2,7 +2,6 @@
   "name": "quaasx-excel-backend",
   "version": "1.0.0",
   "description": "Serverless APIs for quaasx-excel",
-  "main": "server.js",
   "dependencies": {
     "jstat": "^1.9.6",
     "mammoth": "^1.8.0"
