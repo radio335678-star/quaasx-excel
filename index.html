@@ -1,0 +1,1206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>quaasx-excel | Powered by Quaasx Computers</title>
+  <meta name="description" content="Generate professional spreadsheets instantly using AI. Describe what you need and let AI create structured, downloadable Excel files for you.">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <!-- Supabase JS Client SDK -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+  <!-- FUTURISTIC LANDING PAGE -->
+  <div id="landing-page" class="landing-container">
+    <!-- Floating Theme Selector -->
+    <div class="landing-theme-selector" title="Select UI Environment Theme">
+      <button class="landing-theme-btn active" data-theme="default" title="Obsidian Purple"></button>
+      <button class="landing-theme-btn" data-theme="cyberpunk-neon" title="Cyberpunk Neon"></button>
+      <button class="landing-theme-btn" data-theme="matrix-green" title="Matrix Green"></button>
+      <button class="landing-theme-btn" data-theme="arctic-steel" title="Arctic Steel"></button>
+    </div>
+    <!-- Grid Overlay Background -->
+    <div class="cyber-grid"></div>
+    <div class="glow-orb orb-1"></div>
+    <div class="glow-orb orb-2"></div>
+    
+    <div class="landing-content">
+      <!-- Top Cyber Tag -->
+      <div class="cyber-badge-wrapper">
+        <span class="cyber-badge-pulse"></span>
+        <span class="cyber-badge-text">SYSTEM ACTIVE // SECURE ACCESS</span>
+      </div>
+
+      <!-- Main Logo & Brand -->
+      <div class="hero-brand">
+        <h1 class="hero-title">quaasx-excel</h1>
+        <p class="hero-subtitle">powered by <span class="highlight-brand">quaasx computers</span></p>
+      </div>
+
+      <!-- Hero Description -->
+      <p class="hero-desc">
+        Next-generation neural spreadsheet orchestration. Convert cognitive ideas, statistical queries, and raw datasets into structured, styled, formulas-equipped spreadsheets instantly.
+      </p>
+
+      <!-- Terminal Diagnostic Console -->
+      <div class="terminal-dashboard">
+        <div class="terminal-header">
+          <span class="terminal-dot red"></span>
+          <span class="terminal-dot yellow"></span>
+          <span class="terminal-dot green"></span>
+          <span class="terminal-title">SYSTEM_TELEMETRY // ACTIVE LOGS</span>
+        </div>
+        <div class="terminal-body" id="telemetry-logs">
+          <div class="telemetry-line">> INITIALIZING COGNITIVE WORKSPACE...</div>
+          <div class="telemetry-line">> STAT-CORE INTERFACE ONLINE (82 REG. FUNCTIONS)</div>
+        </div>
+      </div>
+
+      <!-- Enter Button -->
+      <div class="enter-section">
+        <button id="enter-app-btn" class="cyber-btn">
+          <span class="btn-text">ENTER INTERFACE <span class="btn-arrow">→</span></span>
+        </button>
+      </div>
+
+      <!-- Cyber Specs / Features Grid -->
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="card-corner-decor"></div>
+          <span class="card-num">[ 01 ]</span>
+          <h3>Cognitive Synthesis</h3>
+          <p>Describe your data model in plain language. Our AI synthesizes formulas, columns, and sample structures instantly.</p>
+        </div>
+        <div class="feature-card">
+          <div class="card-corner-decor"></div>
+          <span class="card-num">[ 02 ]</span>
+          <h3>Live Computation</h3>
+          <p>Fully functional formulas evaluated dynamically in-browser. Recalculates automatically upon editing cell data.</p>
+        </div>
+        <div class="feature-card">
+          <div class="card-corner-decor"></div>
+          <span class="card-num">[ 03 ]</span>
+          <h3>Apex Visualization</h3>
+          <p>Automatic detection of key variables to construct high-fidelity interactive statistical charts and reports.</p>
+        </div>
+      </div>
+
+      <!-- Capabilities Deep-Dive -->
+      <section class="landing-section">
+        <span class="section-tagline">Engine Capabilities</span>
+        <h2 class="section-title">Core Spreadsheet Orchestration</h2>
+        <div class="capabilities-grid">
+          <div class="capability-card">
+            <span class="capability-icon">🧠</span>
+            <h4>Natural Language Synthesis Core</h4>
+            <p>Translates direct descriptive queries into rich multi-sheet workspaces with structured variables, formulas, and mock database records.</p>
+          </div>
+          <div class="capability-card">
+            <span class="capability-icon">⚡</span>
+            <h4>Sandboxed Evaluation Parser</h4>
+            <p>Calculates and evaluates complex algebraic functions and whole-column ranges completely on the client side using a secure recursive compiler.</p>
+          </div>
+          <div class="capability-card">
+            <span class="capability-icon">📊</span>
+            <h4>Smart Column Pattern Matcher</h4>
+            <p>Detects column types, dates, and metric boundaries to generate appropriate multi-variable summaries and interactive charts automatically.</p>
+          </div>
+          <div class="capability-card">
+            <span class="capability-icon">📁</span>
+            <h4>Automated Document Ingestion</h4>
+            <p>Directly parses clinical forms, reports, PDF files, and image logs to structure them into digital sheets in seconds, preventing manual re-typing.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Pricing Section -->
+      <section class="landing-section landing-pricing-section" id="landing-pricing-section">
+        <span class="section-tagline">Subscription Plans</span>
+        <h2 class="section-title">Unbeatable Pricing, World-Class Features</h2>
+        <p class="section-desc" style="max-width: 600px; margin: 0 auto; color: var(--text-secondary); font-size: 13px; line-height: 1.6;">
+          Deploy next-generation cognitive spreadsheets using Quaasx Computers. Scale from our lifetime free credits to pro levels of scientific calculations.
+        </p>
+        
+        <div class="pricing-grid">
+          <!-- FREE PLAN -->
+          <div class="pricing-card free">
+            <span class="card-num-pricing">[ 01 // COGNITIVE START ]</span>
+            <h3>Free Tier</h3>
+            <p class="pricing-narrative">Begin orchestrating spreadsheets in plain language. Ideal for lightweight calculations and students.</p>
+            <div class="price-box">
+              <span class="price-amt">₹0</span>
+              <span class="price-subtext">one-time free credits</span>
+            </div>
+            <ul class="pricing-features-list">
+              <li>100,000 Token Credits (One-time)</li>
+              <li>Standard Formula Synthesis</li>
+              <li>Live Recalculation Engine</li>
+              <li class="unsupported">Priority Cognitive-Ultra Access</li>
+              <li class="unsupported">PDF & word doc processing</li>
+            </ul>
+            <button class="pricing-action-btn active-plan" data-plan="free" id="landing-btn-free">Active Plan</button>
+          </div>
+
+          <!-- PRO PLAN -->
+          <div class="pricing-card pro popular">
+            <span class="card-num-pricing">[ 02 // ELITE CREATIVE ]</span>
+            <h3>Pro Plan</h3>
+            <p class="pricing-narrative">Unbeatable pricing for advanced creators. Unlock unlimited computations and custom chart configurations.</p>
+            <div class="price-box">
+              <span class="price-amt">₹499<span>/mo</span></span>
+              <span class="price-subtext">including GST</span>
+            </div>
+            <ul class="pricing-features-list">
+              <li>Unlimited Token Credits</li>
+              <li>Scientific & Non-Parametric tests</li>
+              <li>High-fidelity dynamic charting</li>
+              <li>Document parser (PDF, Docx ingestion)</li>
+              <li class="unsupported">Priority model queues</li>
+            </ul>
+            <button class="pricing-action-btn" data-plan="pro" id="landing-btn-pro">Upgrade to Pro</button>
+          </div>
+
+          <!-- PRO-PLUS PLAN -->
+          <div class="pricing-card pro-plus">
+            <span class="card-num-pricing">[ 03 // SCIENTIFIC EXPERT ]</span>
+            <h3>Pro-Plus</h3>
+            <p class="pricing-narrative">Deep cognitive precision for laboratories, financial firms, and PhD dissertation research.</p>
+            <div class="price-box">
+              <span class="price-amt">₹999<span>/mo</span></span>
+              <span class="price-subtext">including GST</span>
+            </div>
+            <ul class="pricing-features-list">
+              <li>Unlimited Token Credits</li>
+              <li>Access to experimental models</li>
+              <li>Multi-sheet scientific workbooks</li>
+              <li>Priority rendering queue</li>
+              <li>Advanced telemetry analytics</li>
+            </ul>
+            <button class="pricing-action-btn" data-plan="pro-plus" id="landing-btn-pro-plus">Upgrade to Pro-Plus</button>
+          </div>
+
+          <!-- ENTERPRISE PLAN -->
+          <div class="pricing-card enterprise">
+            <span class="card-num-pricing">[ 04 // CORPORATE SYSTEM ]</span>
+            <h3>Enterprise</h3>
+            <p class="pricing-narrative">Sandboxed compliance, volume deployment, and custom telemetry solutions for larger organizations.</p>
+            <div class="price-box">
+              <span class="price-amt">Contact</span>
+              <span class="price-subtext">custom configurations</span>
+            </div>
+            <ul class="pricing-features-list">
+              <li>Dedicated model deployments</li>
+              <li>Compliance & audit telemetry</li>
+              <li>Custom formula extensions</li>
+              <li>100% Client-side privacy compliance</li>
+              <li>Dedicated priority support</li>
+            </ul>
+            <a href="mailto:info@quaasx108.com" class="pricing-action-btn" id="landing-btn-enterprise">Contact Sales</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- Statistical Registry Explorer -->
+      <section class="landing-section">
+        <span class="section-tagline">Comprehensive Stats Registry</span>
+        <h2 class="section-title">80+ Client-Side Functions</h2>
+        <div class="registry-container">
+          <div class="registry-tabs">
+            <button class="registry-tab-btn active" data-category="math-logic">Math & Logic</button>
+            <button class="registry-tab-btn" data-category="descriptive">Descriptive Stats</button>
+            <button class="registry-tab-btn" data-category="inferential">Inferential Stats</button>
+            <button class="registry-tab-btn" data-category="non-parametric">Non-Parametric</button>
+            <button class="registry-tab-btn" data-category="clinical">Clinical & Diagnostic</button>
+            <button class="registry-tab-btn" data-category="financial">Financial Metrics</button>
+            <button class="registry-tab-btn" data-category="engineering">Engineering QC</button>
+          </div>
+
+          <!-- Math & Logic Tab content -->
+          <div class="registry-content active" id="cat-math-logic">
+            <div class="stat-func-card">
+              <div class="stat-func-header">
+                <span class="stat-func-name">SUM / AVERAGE</span>
+                <span class="stat-func-badge">Math</span>
+              </div>
+              <p class="stat-func-desc">Basic statistical aggregation of numerical values in a range.</p>
+              <div class="stat-func-syntax">SUM(range) | AVERAGE(range)</div>
+            </div>
+            <div class="stat-func-card">
+              <div class="stat-func-header">
+                <span class="stat-func-name">IF / IFERROR</span>
+                <span class="stat-func-badge">Logic</span>
+              </div>
+              <p class="stat-func-desc">Conditional branching and error fallback execution.</p>
+              <div class="stat-func-syntax">IF(condition, true_val, false_val)</div>
+            </div>
+            <div class="stat-func-card">
+              <div class="stat-func-header">
+                <span class="stat-func-name">AND / OR / NOT</span>
+                <span class="stat-func-badge">Logic</span>
+              </div>
+              <p class="stat-func-desc">Standard boolean operators for compound conditions.</p>
+              <div class="stat-func-syntax">AND(cond1, cond2, ...)</div>
+            </div>
+            <div class="stat-func-card">
+              <div class="stat-func-header">
+                <span class="stat-func-name">ROUND / CEILING / FLOOR</span>
+                <span class="stat-func-badge">Math</span>
+              </div>
+              <p class="stat-func-desc">Decimal precision control and custom rounding steps.</p>
+              <div class="stat-func-syntax">ROUND(value, decimals)</div>
+            </div>
+          </div>
+
+          <!-- Descriptive Tab content -->
+          <div class="registry-content" id="cat-descriptive">
+            <div class="stat-func-card">
+              <div class="stat-func-header">
+                <span class="stat-func-name">STDEV / STDEVP</span>
+                <span class="stat-func-badge">Descriptive</span>
+              </div>
+              <p class="stat-func-desc">Calculates sample or population standard deviation.</p>
+              <div class="stat-func-syntax">STDEV(col_range)</div>
+            </div>
+            <div class="stat-func-card">
+              <div class="stat-func-header">
+                <span class="stat-func-name">VAR / VARP</span>
+                <span class="stat-func-badge">Descriptive</span>
+              </div>
+              <p class="stat-func-desc">Computes sample or population variance.</p>
+              <div class="stat-func-syntax">VAR(col_range)</div>
+            </div>
+            <div class="stat-func-card">
+              <div class="stat-func-header">
+                <span class="stat-func-name">MEDIAN / MODE</span>
+                <span class="stat-func-badge">Descriptive</span>
+              </div>
+              <p class="stat-func-desc">Calculates middle value or most frequent item in a column.</p>
+              <div class="stat-func-syntax">MEDIAN(col_range)</div>
+            </div>
+            <div class="stat-func-card">
+              <div class="stat-func-header">
+                <span class="stat-func-name">SKEW / KURT</span>
+                <span class="stat-func-badge">Descriptive</span>
+              </div>
+              <p class="stat-func-desc">Measures the asymmetry and distribution tailedness.</p>
+              <div class="stat-func-syntax">SKEW(col_range)</div>
+            </div>
+          </div>
+
+          <!-- Inferential Tab content -->
+          <div class="registry-content" id="cat-inferential">
+            <div class="stat-func-card">
+              <div class="stat-func-header">
+                <span class="stat-func-name">TTEST_P / TTEST_T</span>
+                <span class="stat-func-badge">Inferential</span>
+              </div>
+              <p class="stat-func-desc">Student's paired t-test yielding p-value and t-statistic.</p>
+              <div class="stat-func-syntax">TTEST_P(pre_col, post_col)</div>
+            </div>
+            <div class="stat-func-card">
+              <div class="stat-func-header">
+                <span class="stat-func-name">ANOVA_F / ANOVA_P</span>
+                <span class="stat-func-badge">Inferential</span>
+              </div>
+              <p class="stat-func-desc">One-way Analysis of Variance across multiple sample groups.</p>
+              <div class="stat-func-syntax">ANOVA_P(group1, group2, group3)</div>
+            </div>
+            <div class="stat-func-card">
+              <div class="stat-func-header">
+                <span class="stat-func-name">CORREL / CORREL_P</span>
+                <span class="stat-func-badge">Inferential</span>
+              </div>
+              <p class="stat-func-desc">Pearson correlation coefficient and significance level.</p>
+              <div class="stat-func-syntax">CORREL(col1, col2)</div>
+            </div>
+            <div class="stat-func-card">
+              <div class="stat-func-header">
+                <span class="stat-func-name">SLOPE / INTERCEPT</span>
+                <span class="stat-func-badge">Regression</span>
+              </div>
+              <p class="stat-func-desc">Computes linear regression coefficients (y = mx + c).</p>
+              <div class="stat-func-syntax">SLOPE(y_range, x_range)</div>
+            </div>
+          </div>
+
+          <!-- Non-Parametric Tab content -->
+          <div class="registry-content" id="cat-non-parametric">
+            <div class="stat-func-card">
+              <div class="stat-func-header">
+                <span class="stat-func-name">WILCOXON_P / WILCOXON_T</span>
+                <span class="stat-func-badge">Non-Parametric</span>
+              </div>
+              <p class="stat-func-desc">Wilcoxon signed-rank test for paired non-normal datasets.</p>
+              <div class="stat-func-syntax">WILCOXON_P(pre_col, post_col)</div>
+            </div>
+            <div class="stat-func-card">
+              <div class="stat-func-header">
+                <span class="stat-func-name">MANN_WHITNEY_P / MANN_WHITNEY_U</span>
+                <span class="stat-func-badge">Non-Parametric</span>
+              </div>
+              <p class="stat-func-desc">Mann-Whitney U rank test for two independent distributions.</p>
+              <div class="stat-func-syntax">MANN_WHITNEY_P(col1, col2)</div>
+            </div>
+          </div>
+
+          <!-- Clinical & Diagnostic Tab content -->
+          <div class="registry-content" id="cat-clinical">
+            <div class="stat-func-card">
+              <div class="stat-func-header">
+                <span class="stat-func-name">SENSITIVITY / SPECIFICITY</span>
+                <span class="stat-func-badge">Clinical</span>
+              </div>
+              <p class="stat-func-desc">Diagnostic test accuracy evaluation ratios (True Pos/Neg rates).</p>
+              <div class="stat-func-syntax">SENSITIVITY(true_pos, false_neg)</div>
+            </div>
+            <div class="stat-func-card">
+              <div class="stat-func-header">
+                <span class="stat-func-name">ODDS_RATIO / RELATIVE_RISK</span>
+                <span class="stat-func-badge">Clinical</span>
+              </div>
+              <p class="stat-func-desc">Measures strength of association between exposure and outcome.</p>
+              <div class="stat-func-syntax">ODDS_RATIO(a, b, c, d)</div>
+            </div>
+            <div class="stat-func-card">
+              <div class="stat-func-header">
+                <span class="stat-func-name">PPV / NPV_CLINICAL</span>
+                <span class="stat-func-badge">Clinical</span>
+              </div>
+              <p class="stat-func-desc">Positive & negative predictive indicators for medical diagnoses.</p>
+              <div class="stat-func-syntax">PPV(tp, fp) | NPV_CLINICAL(tn, fn)</div>
+            </div>
+            <div class="stat-func-card">
+              <div class="stat-func-header">
+                <span class="stat-func-name">BMI / BSA</span>
+                <span class="stat-func-badge">Clinical</span>
+              </div>
+              <p class="stat-func-desc">Body Mass Index and Body Surface Area physiological calculators.</p>
+              <div class="stat-func-syntax">BMI(weight_kg, height_m)</div>
+            </div>
+          </div>
+
+          <!-- Financial Tab content -->
+          <div class="registry-content" id="cat-financial">
+            <div class="stat-func-card">
+              <div class="stat-func-header">
+                <span class="stat-func-name">NPV_FIN / IRR</span>
+                <span class="stat-func-badge">Financial</span>
+              </div>
+              <p class="stat-func-desc">Calculates investment Net Present Value and Internal Rate of Return.</p>
+              <div class="stat-func-syntax">NPV_FIN(discount_rate, cash_flows)</div>
+            </div>
+            <div class="stat-func-card">
+              <div class="stat-func-header">
+                <span class="stat-func-name">CAGR / ROI</span>
+                <span class="stat-func-badge">Financial</span>
+              </div>
+              <p class="stat-func-desc">Compound Annual Growth Rate and Return on Investment ratios.</p>
+              <div class="stat-func-syntax">CAGR(start_val, end_val, periods)</div>
+            </div>
+            <div class="stat-func-card">
+              <div class="stat-func-header">
+                <span class="stat-func-name">PMT / FV / PV</span>
+                <span class="stat-func-badge">Financial</span>
+              </div>
+              <p class="stat-func-desc">Amortization payment, future valuation, and present cost formulas.</p>
+              <div class="stat-func-syntax">PMT(rate, nper, pv)</div>
+            </div>
+            <div class="stat-func-card">
+              <div class="stat-func-header">
+                <span class="stat-func-name">BREAKEVEN / MARGIN</span>
+                <span class="stat-func-badge">Financial</span>
+              </div>
+              <p class="stat-func-desc">Finds breakeven units and product gross profit margins.</p>
+              <div class="stat-func-syntax">BREAKEVEN(fixed_costs, price, var_cost)</div>
+            </div>
+          </div>
+
+          <!-- Engineering QC Tab content -->
+          <div class="registry-content" id="cat-engineering">
+            <div class="stat-func-card">
+              <div class="stat-func-header">
+                <span class="stat-func-name">PROCESS_CP / PROCESS_CPK</span>
+                <span class="stat-func-badge">Quality</span>
+              </div>
+              <p class="stat-func-desc">Calculates statistical capability limits and process centering ratios.</p>
+              <div class="stat-func-syntax">PROCESS_CPK(data_range, usl, lsl)</div>
+            </div>
+            <div class="stat-func-card">
+              <div class="stat-func-header">
+                <span class="stat-func-name">UCL / LCL</span>
+                <span class="stat-func-badge">Quality</span>
+              </div>
+              <p class="stat-func-desc">Determines upper and lower statistical control bounds.</p>
+              <div class="stat-func-syntax">UCL(data_range) | LCL(data_range)</div>
+            </div>
+            <div class="stat-func-card">
+              <div class="stat-func-header">
+                <span class="stat-func-name">RMSE / MAPE / MAE</span>
+                <span class="stat-func-badge">Engineering</span>
+              </div>
+              <p class="stat-func-desc">Standard error calculations measuring forecasting deviation.</p>
+              <div class="stat-func-syntax">RMSE(actual_col, forecast_col)</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Target Workflows & Industries -->
+      <section class="landing-section">
+        <span class="section-tagline">Domain Specifics</span>
+        <h2 class="section-title">Built For Specialized Workflows</h2>
+        <div class="industries-grid">
+          <div class="industry-card">
+            <div class="industry-header">
+              <span class="industry-icon">🔬</span>
+              <h4>Medical & Clinical Studies</h4>
+            </div>
+            <p>Calculates symptom indices, cohort treatment effectiveness, diagnostic accuracies, and outputs publication-ready datasets directly from raw reports.</p>
+            <span class="industry-tag">t-tests, sensitivity, odds ratios</span>
+          </div>
+          <div class="industry-card">
+            <div class="industry-header">
+              <span class="industry-icon">🎓</span>
+              <h4>Academic & Dissertation Research</h4>
+            </div>
+            <p>Automatically separates compiled worksheets into raw datasets, descriptive statistics tables, and inferential verification sheets formatted for papers.</p>
+            <span class="industry-tag">ANOVA, Chi-Sq, Spearman, Cohen's d</span>
+          </div>
+          <div class="industry-card">
+            <div class="industry-header">
+              <span class="industry-icon">⚙️</span>
+              <h4>Manufacturing & Process Quality Control</h4>
+            </div>
+            <p>Tracks engineering tolerances, capability bounds (Cpk), and deviations to maintain rigorous standards across manufacturing batches.</p>
+            <span class="industry-tag">Cpk index, UCL/LCL bounds, RMSE</span>
+          </div>
+          <div class="industry-card">
+            <div class="industry-header">
+              <span class="industry-icon">💼</span>
+              <h4>Corporate Investment & Business Analysis</h4>
+            </div>
+            <p>Evaluates project feasibility, compound annual growth models, NPV capital budgets, and interest schedules for clear financial decisioning.</p>
+            <span class="industry-tag">NPV, IRR, CAGR, Breakeven</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Differentiators & Value Proposition -->
+      <section class="landing-section">
+        <span class="section-tagline">Why Quaasx-Excel?</span>
+        <h2 class="section-title">How We Differentiate</h2>
+        <div class="matrix-container">
+          <div class="matrix-grid">
+            <div class="matrix-col legacy">
+              <div class="matrix-col-title">
+                <span>❌ Traditional AI & Flat Sheets</span>
+              </div>
+              <div class="matrix-item">
+                <h5>Dead Spreadsheet Exports</h5>
+                <p>AI text output writes static cell values. Modifying data does not recalculate values, forcing manual re-entry.</p>
+              </div>
+              <div class="matrix-item">
+                <h5>Manual Statistical Coding</h5>
+                <p>Requires writing custom Python, R, or SPSS programs to calculate statistical tests like Welch's Independent t-test.</p>
+              </div>
+              <div class="matrix-item">
+                <h5>Data Privacy Exposures</h5>
+                <p>Formula calculations are sent to cloud database servers, creating vulnerabilities for confidential medical datasets.</p>
+              </div>
+            </div>
+            <div class="matrix-col quaasx">
+              <div class="matrix-col-title">
+                <span>⚡ Quaasx-Excel Cognitive Core</span>
+              </div>
+              <div class="matrix-item">
+                <h5>Dual-Engine Live Formulas</h5>
+                <p>Generates active, standard Excel formulas that compute live in-browser and remain fully dynamic upon export to Microsoft Excel.</p>
+              </div>
+              <div class="matrix-item">
+                <h5>No-Code Scientific Registry</h5>
+                <p>Natively computes p-values, regression, and Cpk indices in-browser. Express complex requirements in plain text.</p>
+              </div>
+              <div class="matrix-item">
+                <h5>100% In-Browser Calculations</h5>
+                <p>Calculations compile inside your browser sandbox. None of your spreadsheet data is ever sent to or processed by our servers.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+
+      <!-- Footer Stats -->
+      <footer class="landing-footer">
+        <div class="footer-spec">CORE_STATUS: <span class="spec-value text-success">ONLINE</span></div>
+        <div class="footer-spec">SECURE_LINK: <span class="spec-value">DIRECT</span></div>
+        <div class="footer-spec">ENGINE: <span class="spec-value">QUAASX COGNITIVE CORE</span></div>
+        <div class="footer-spec">CREDIT: <span class="spec-value">QUAASX CORP</span></div>
+      </footer>
+    </div>
+  </div>
+
+  <div class="app" style="display: none; opacity: 0; transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1);">
+    <!-- HEADER -->
+    <header class="app-header">
+      <div class="logo">
+        <button id="sidebar-toggle-btn" class="sidebar-toggle-btn" title="Collapse Sidebar">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="9" y1="3" x2="9" y2="21"></line>
+          </svg>
+        </button>
+        <span class="logo-icon">📊</span>
+        <div class="brand-wrapper">
+          <h1 class="brand-name">quaasx-excel</h1>
+          <span class="brand-powered">powered by quaasx computers</span>
+        </div>
+      </div>
+      <div class="header-subscription-status" id="header-subscription-status"></div>
+      <div class="api-key-section">
+        <!-- Holographic Sync Status Badge -->
+        <div class="sync-badge" id="sync-status-badge" title="Database Sync Status">
+          <span class="sync-dot"></span>
+          <span class="sync-text">Guest Mode</span>
+        </div>
+        <span id="api-key-status" class="status-dot" title="Quaasx API Status"></span>
+        <!-- User Profile Dropdown Widget -->
+        <div class="user-profile-widget" id="user-profile-widget" style="display: none;">
+          <div class="avatar-circle" id="user-avatar-initials">G</div>
+          <div class="user-dropdown-menu" id="user-dropdown-menu">
+            <div class="user-dropdown-email" id="user-dropdown-email">guest@quaasx.com</div>
+            <div class="user-dropdown-divider"></div>
+            <button class="user-dropdown-item" id="user-logout-btn">Sign Out</button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+      <!-- ACTIVITY BAR -->
+      <div class="activity-bar">
+        <div class="activity-top">
+          <button class="activity-btn active" id="btn-activity-history" title="History (Alt+H)">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="activity-icon"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+          </button>
+          <button class="activity-btn active" id="btn-activity-chat" title="AI Chat (Alt+C)">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="activity-icon"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+          </button>
+          <button class="activity-btn" id="btn-activity-registry" title="Formula Inspector (Alt+F)">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="activity-icon"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+          </button>
+        </div>
+        <div class="activity-bottom">
+          <button class="activity-btn" id="btn-activity-console" title="System Logs / Telemetry (Alt+L)">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="activity-icon"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line></svg>
+          </button>
+          <button class="activity-btn" id="btn-activity-settings" title="Settings (Alt+S)">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="activity-icon"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- PROJECT SIDEBAR -->
+      <aside class="project-sidebar" id="project-sidebar">
+        <div class="sidebar-header">
+          <button class="new-chat-btn" id="new-project-btn" title="New Chat">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            <span>New Chat</span>
+          </button>
+        </div>
+        <div class="project-list" id="project-list"></div>
+      </aside>
+
+      <!-- Pane divider between Project Sidebar and Chat Panel -->
+      <div class="pane-divider" id="divider-sidebar"></div>
+
+      <!-- LEFT: Chat Panel -->
+      <section class="chat-panel">
+        <div class="panel-header">
+          <h2>💬 Chat</h2>
+        </div>
+        <div class="chat-messages" id="chat-messages">
+          <div class="welcome-message">
+            <h3>Welcome to quaasx-excel!</h3>
+            <p>Powered by Quaasx Computers. Describe the spreadsheet you want to create, or upload a file to extract data from.</p>
+            <div class="suggestions">
+              <button class="suggestion-chip" data-prompt="Create a monthly budget tracker with categories, planned vs actual spending, and a summary row">📋 Budget Tracker</button>
+              <button class="suggestion-chip" data-prompt="Create a project timeline with tasks, assignees, start dates, end dates, status, and priority">📅 Project Timeline</button>
+              <button class="suggestion-chip" data-prompt="Create a sales report with product names, quantities, unit prices, totals, and regional breakdown across 2 sheets">📊 Sales Report</button>
+            </div>
+          </div>
+        </div>
+        <div class="chat-input-area">
+          <div class="mode-selector">
+            <button class="mode-btn active" data-mode="build" title="Generate or modify the spreadsheet directly">
+              <span class="mode-icon">⚡</span>
+              <span class="mode-label">Build</span>
+            </button>
+            <button class="mode-btn" data-mode="plan" title="Get a step-by-step plan before changes">
+              <span class="mode-icon">📋</span>
+              <span class="mode-label">Plan</span>
+            </button>
+            <button class="mode-btn" data-mode="ask" title="Ask / Discuss ideas: i will help u to make it to reality">
+              <span class="mode-icon">💡</span>
+              <span class="mode-label">Ask / Discuss ideas</span>
+            </button>
+          </div>
+          <div class="premium-chat-box">
+            <textarea id="user-input" placeholder="Describe your spreadsheet..." rows="1"></textarea>
+            <div id="file-preview" class="file-preview"></div>
+            <div class="input-card-footer">
+              <input type="file" id="file-input" accept="image/*,.docx,.doc" multiple hidden>
+              <button id="file-upload-label" class="upload-btn" title="Attach files (Images, DOCX)">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
+              </button>
+              <button id="send-btn" class="send-btn" disabled>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Pane divider between Chat Panel and Spreadsheet Panel -->
+      <div class="pane-divider" id="divider-chat"></div>
+
+      <!-- RIGHT: Spreadsheet Panel -->
+      <section class="spreadsheet-panel">
+        <div class="spreadsheet-toolbar">
+          <div class="sheet-tabs" id="sheet-tabs">
+            <!-- Sheet tabs rendered dynamically -->
+          </div>
+          <div class="toolbar-actions">
+            <div class="view-toggle" id="view-toggle" style="display:none;">
+              <button class="view-btn active" data-view="table" title="Table View">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="3" x2="9" y2="21"/></svg>
+              </button>
+              <button class="view-btn" data-view="charts" title="Charts View">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+              </button>
+              <button class="view-btn" data-view="split" title="Split View">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="12" y1="3" x2="12" y2="21"/></svg>
+              </button>
+              <span class="view-divider"></span>
+              <button class="toolbar-refresh-btn" id="refresh-btn" title="Refresh Calculations & View">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="23 4 23 10 17 10"></polyline>
+                  <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+                </svg>
+              </button>
+            </div>
+            <button id="download-btn" class="download-btn" disabled>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Download .xlsx
+            </button>
+          </div>
+        </div>
+        <div id="thinking-window" class="thinking-window" style="display:none;">
+          <div class="thinking-header">
+            <div class="thinking-status">
+              <span class="thinking-pulse-dot"></span>
+              <span id="thinking-status-text">AI is reasoning...</span>
+            </div>
+            <div class="thinking-controls">
+              <div class="thinking-tabs">
+                <button class="thinking-tab-btn active" id="btn-thinking-reasoning" title="View AI Reasoning Chain">Cognitive Reasoning</button>
+                <button class="thinking-tab-btn" id="btn-thinking-compilation" title="View Spreadsheet Compiler Output">Spreadsheet Compiler</button>
+              </div>
+              <span class="view-divider"></span>
+              <button class="thinking-tool-btn" id="btn-compiler-view-type" title="Toggle Raw JSON / Visual Tree View">Visual Tree</button>
+              <button class="thinking-tool-btn" id="btn-scroll-lock" title="Toggle Auto-Scroll Lock">Scroll Lock 🔓</button>
+            </div>
+            <button id="thinking-toggle" class="thinking-toggle" title="Collapse">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+          </div>
+          <div class="thinking-content" id="thinking-content">
+            <pre id="thinking-text" class="thinking-pane active"></pre>
+            <div id="compilation-pane" class="thinking-pane" style="display:none; height:100%;">
+              <pre id="compilation-raw" style="margin:0; height:100%; overflow:auto;"></pre>
+              <div id="compilation-tree" style="display:none; margin:0; height:100%; overflow:auto; font-family:'SF Mono','Cascadia Code',monospace; font-size:11px; padding: 4px 0;"></div >
+            </div>
+          </div>
+        </div>
+        <div class="spreadsheet-workspace" id="spreadsheet-workspace">
+          <!-- Cyber Compiling Scan Overlay -->
+          <div id="compiling-overlay" class="compiling-overlay-container" style="display: none;">
+            <div class="scanner-grid"></div>
+            <div class="scanner-laser"></div>
+            <div class="compiling-card">
+              <div class="compiling-spinner"></div>
+              <h3 class="compiling-title">Compiling Workbook Schema</h3>
+              <p class="compiling-subtitle">Parsing sheets, columns, and formulas...</p>
+              <div class="compiling-progress-bar">
+                <div class="compiling-progress-fill"></div>
+              </div>
+            </div>
+          </div>
+          <div class="spreadsheet-container" id="spreadsheet-container">
+            <div id="empty-state" class="empty-state">
+              <div class="empty-icon">📊</div>
+              <h3>Welcome to quaasx-excel</h3>
+              <p>Powered by Quaasx Computers. Describe what you need in the chat, and the AI will generate it for you.</p>
+            </div>
+            <div id="loading-indicator" class="loading-indicator" style="display:none;">
+              <div class="spinner"></div>
+              <p>AI is generating your spreadsheet...</p>
+            </div>
+          </div>
+          <div class="charts-container" id="charts-container" style="display:none;"></div>
+        </div>
+        
+        <!-- Divider between workspace and console -->
+        <div class="pane-divider-horizontal" id="divider-console"></div>
+        
+        <!-- Telemetry Console Drawer -->
+        <div class="ide-console" id="ide-console">
+          <div class="console-header">
+            <div class="console-title-section">
+              <span class="console-status-dot"></span>
+              <span class="console-title">TELEMETRY_LOG // RECALCULATION_STREAM</span>
+            </div>
+            <div class="console-actions">
+              <button class="console-btn" id="console-clear-btn" title="Clear Logs">🗑️</button>
+              <button class="console-btn" id="console-toggle-btn" title="Minimize/Maximize Console">🔽</button>
+            </div>
+          </div>
+          <div class="console-body" id="console-log-lines">
+            <div class="console-line system">> SYSTEM INITIALIZED: SCI-FI WORKBENCH ACTIVE</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Pane divider between Spreadsheet Panel and Formula Inspector -->
+      <div class="pane-divider" id="divider-registry" style="display: none;"></div>
+
+      <!-- FORMULA INSPECTOR SIDEBAR -->
+      <aside class="project-sidebar collapsed" id="registry-sidebar" style="display: none; border-left: 1px solid var(--border-color); border-right: none;">
+        <div class="sidebar-header" style="border-bottom: 1px solid var(--border-color); padding: 14px 18px;">
+          <h2 style="font-size: 14px; font-weight: 600; color: var(--text-secondary);">📐 Formula Inspector</h2>
+        </div>
+        <div class="project-list" id="registry-list" style="padding: 16px; display: flex; flex-direction: column; gap: 16px;">
+          <div style="color: var(--text-muted); font-size: 12px;">No active sheet variables.</div>
+        </div>
+      </aside>
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.8.0/mammoth.browser.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jstat@1.9.6/dist/jstat.min.js"></script>
+  <script src="js/formula-engine.js"></script>
+  <script src="js/stat-functions.js"></script>
+  <script src="js/ai-service.js"></script>
+  <script src="js/research-agent.js"></script>
+  <script src="js/agent-orchestrator.js"></script>
+  <script src="js/table-renderer.js"></script>
+  <script src="js/excel-export.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/apexcharts@3.45.1/dist/apexcharts.min.js"></script>
+  <script src="js/chart-engine.js"></script>
+  <script src="js/chart-renderer.js"></script>
+  <script src="js/app.js"></script>
+  <!-- SYSTEM BOOT OVERLAY -->
+  <div id="boot-overlay" class="boot-overlay-container" style="display: none;">
+    <div class="boot-terminal">
+      <div class="boot-header">
+        <span class="boot-dot red"></span>
+        <span class="boot-dot yellow"></span>
+        <span class="boot-dot green"></span>
+        <span class="boot-title">QUAASX SYSTEM BOOT LOADER v4.8.1</span>
+      </div>
+      <div class="boot-body" id="boot-logs">
+        <div class="boot-line">> MOUNTING COGNITIVE RECONSTITUTION ENGINE...</div>
+      </div>
+      <div class="boot-progress-bar">
+        <div class="boot-progress-fill" id="boot-progress-fill"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Scramble text effect on load
+    function scrambleText(element, finalVal, duration) {
+      var chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_#@$%&+[]';
+      var iterations = finalVal.length;
+      var count = 0;
+      var interval = setInterval(function() {
+        var scrambled = '';
+        for (var i = 0; i < iterations; i++) {
+          if (i < count) {
+            scrambled += finalVal[i];
+          } else {
+            scrambled += chars[Math.floor(Math.random() * chars.length)];
+          }
+        }
+        element.textContent = scrambled;
+        if (count >= iterations) {
+          clearInterval(interval);
+        }
+        count += 1.5;
+      }, duration / iterations);
+    }
+
+    // Run scramble text on title load
+    window.addEventListener('DOMContentLoaded', function() {
+      var title = document.querySelector('.hero-title');
+      if (title) scrambleText(title, 'quaasx-excel', 1000);
+      
+      // Roll diagnostic logs on landing
+      var telemetryLogs = document.getElementById('telemetry-logs');
+      var messages = [
+        '[CALC] TTEST_P([Pre], [Post]) -> p-value: 0.0023 (Strong)',
+        '[CALC] ANOVA_F([Gr_A], [Gr_B], [Gr_C]) -> F: 14.82',
+        '[SYS] Browser sandboxed compiler status: SECURE_CORE_OK',
+        '[CALC] CORREL([Sales], [AdSpend]) -> r: 0.924',
+        '[SYS] Live formulas recursion engine: COMPILED_OK',
+        '[CALC] IRR([CF_Yr1..5]) -> rate: 12.8%',
+        '[SYS] jStat distribution modules loaded (t, chi-sq, F, normal)',
+        '[CALC] MANN_WHITNEY_P([SymptomA], [SymptomB]) -> p: 0.014',
+        '[CALC] PROCESS_CPK([Tols_USL], [Tols_LSL]) -> Cpk: 1.67',
+        '[SYS] Apex-Charts auto-detection layer: ONLINE'
+      ];
+      var msgIdx = 0;
+      
+      setInterval(function() {
+        if (telemetryLogs) {
+          var line = document.createElement('div');
+          line.className = 'telemetry-line';
+          line.textContent = '> ' + messages[msgIdx];
+          telemetryLogs.appendChild(line);
+          telemetryLogs.scrollTop = telemetryLogs.scrollHeight;
+          msgIdx = (msgIdx + 1) % messages.length;
+          
+          // Cap lines
+          while (telemetryLogs.children.length > 5) {
+            telemetryLogs.removeChild(telemetryLogs.firstChild);
+          }
+        }
+      }, 3000);
+
+      // Category Tab Switching for Statistical Registry
+      var tabButtons = document.querySelectorAll('.registry-tab-btn');
+      var contents = document.querySelectorAll('.registry-content');
+      
+      tabButtons.forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          var targetCat = btn.getAttribute('data-category');
+          
+          tabButtons.forEach(function(b) { b.classList.remove('active'); });
+          btn.classList.add('active');
+          
+          contents.forEach(function(content) {
+            var id = content.getAttribute('id');
+            if (id === 'cat-' + targetCat) {
+              content.classList.add('active');
+            } else {
+              content.classList.remove('active');
+            }
+          });
+        });
+      });
+    });
+
+    // Enter App Button Click -> Boot Sequence Loader -> App Frame
+    document.getElementById('enter-app-btn').addEventListener('click', function() {
+      var landing = document.getElementById('landing-page');
+      var app = document.querySelector('.app');
+      var bootOverlay = document.getElementById('boot-overlay');
+      var bootLogs = document.getElementById('boot-logs');
+      var progressFill = document.getElementById('boot-progress-fill');
+      var authOverlay = document.getElementById('auth-modal-overlay');
+      
+      function startBootSequence() {
+        // Show boot screen
+        bootOverlay.style.display = 'flex';
+        
+        var steps = [
+          { text: 'ESTABLISHING SYLLOGISTIC CONNECTION TO CORE...', wait: 250 },
+          { text: 'MOUNTING NEURAL SPREADSHEET PARSER...', wait: 350 },
+          { text: 'REGISTERING 82 SCI-FI ALGORITHMS...', wait: 300 },
+          { text: 'INITIALIZING APEX VISUAL DATA CONSOLE...', wait: 250 },
+          { text: 'ALL MODULES MOUNTED. SECURE GATEWAY OPEN.', wait: 200 }
+        ];
+        
+        var stepIdx = 0;
+        var totalDuration = steps.reduce(function(sum, s) { return sum + s.wait; }, 0);
+        var currentWait = 0;
+        
+        function executeBootStep() {
+          if (stepIdx < steps.length) {
+            var step = steps[stepIdx];
+            setTimeout(function() {
+              var line = document.createElement('div');
+              line.className = 'boot-line';
+              line.textContent = '> ' + step.text;
+              bootLogs.appendChild(line);
+              bootLogs.scrollTop = bootLogs.scrollHeight;
+              
+              // Update progress fill
+              currentWait += step.wait;
+              progressFill.style.width = Math.min((currentWait / totalDuration) * 100, 100) + '%';
+              
+              stepIdx++;
+              executeBootStep();
+            }, step.wait);
+          } else {
+            // Finish loading, trigger fade out boot screen and landing page
+            setTimeout(function() {
+              // Fade out boot overlay and landing
+              bootOverlay.style.transition = 'opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1)';
+              bootOverlay.style.opacity = '0';
+              
+              landing.style.opacity = '0';
+              landing.style.transform = 'scale(1.02) translateY(-10px)';
+              landing.style.pointerEvents = 'none';
+              
+              // Show and fade in app
+              app.style.display = 'flex';
+              setTimeout(function() {
+                app.style.opacity = '1';
+              }, 50);
+              
+              // Cleanup elements from DOM after transition finishes
+              setTimeout(function() {
+                bootOverlay.style.display = 'none';
+                landing.style.display = 'none';
+              }, 850);
+            }, 400);
+          }
+        }
+        
+        executeBootStep();
+      }
+
+      window.startQuaasxBootSequence = startBootSequence;
+
+      if (window.supabaseActive && !window.supabaseLoggedIn) {
+        authOverlay.style.display = 'flex';
+        window.triggerBootSequence = startBootSequence;
+      } else {
+        startBootSequence();
+      }
+    });
+  </script>
+
+  <!-- FLOATING FORMULA HELPER POPOVER -->
+  <div id="formula-helper-popover" class="formula-helper-popover">
+    <div class="formula-helper-title">SUM</div>
+    <div class="formula-helper-syntax">SUM(range)</div>
+    <div class="formula-helper-desc">Basic statistical aggregation of numerical values in a range.</div>
+  </div>
+
+  <!-- FUTURISTIC SETTINGS MODAL -->
+  <div id="settings-modal" class="settings-modal-overlay" style="display: none;">
+    <div class="settings-modal-card">
+      <div class="settings-modal-header">
+        <h3>⚙️ System Settings</h3>
+        <button id="close-settings-btn" class="close-modal-btn">&times;</button>
+      </div>
+      <div class="settings-modal-body">
+        <div class="setting-group">
+          <label>Subscription & Usage</label>
+          <p class="setting-help">Manage your subscription packages and monitor API token allocations.</p>
+          
+          <!-- Token usage meter for Free Plan -->
+          <div class="token-meter-container" id="settings-token-meter-container" style="display: none;">
+            <div class="token-meter-label-row">
+              <span>Free Credits Consumed:</span>
+              <span id="settings-token-count-text">0 / 100,000 tokens</span>
+            </div>
+            <div class="token-meter-bar">
+              <div class="token-meter-fill" id="settings-token-meter-fill"></div>
+            </div>
+          </div>
+
+          <div class="settings-pricing-options">
+            <!-- Free card -->
+            <div class="settings-pricing-card" data-plan="free" id="settings-plan-free">
+              <h4>Free Tier</h4>
+              <div class="price">₹0</div>
+              <button>Select</button>
+            </div>
+            <!-- Pro card -->
+            <div class="settings-pricing-card" data-plan="pro" id="settings-plan-pro">
+              <h4>Pro Plan</h4>
+              <div class="price">₹499/mo</div>
+              <button>Upgrade</button>
+            </div>
+            <!-- Pro-Plus card -->
+            <div class="settings-pricing-card" data-plan="pro-plus" id="settings-plan-pro-plus">
+              <h4>Pro-Plus</h4>
+              <div class="price">₹999/mo</div>
+              <button>Upgrade</button>
+            </div>
+          </div>
+          <div style="margin-top: 8px; text-align: center;">
+            <a href="mailto:info@quaasx108.com" style="color: var(--text-muted); font-size: 11px; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='var(--accent-primary)'" onmouseout="this.style.color='var(--text-muted)'">Need Enterprise volume? Contact sales.</a>
+          </div>
+        </div>
+
+        <div class="setting-group">
+          <label for="model-selector">Cognitive Model</label>
+          <p class="setting-help">Select the LLM core model to generate sheets.</p>
+          <select id="model-selector" class="settings-select">
+            <option value="quaasx-cognitive-4" selected>quaasx-cognitive-4 (Balanced & Smart)</option>
+            <option value="quaasx-cognitive-ultra">quaasx-cognitive-ultra (Scientific Specialization)</option>
+            <option value="quaasx-cognitive-speed">quaasx-cognitive-speed (Fast Execution)</option>
+          </select>
+        </div>
+
+        <div class="setting-group">
+          <label>Cyber Theme</label>
+          <p class="setting-help">Switch visual environment filters.</p>
+          <div class="theme-options-grid">
+            <button class="theme-option-btn active" data-theme="default">
+              <span class="theme-preview" style="background: #07070d; border-color: #7c3aed;"></span>
+              <span>Obsidian Purple</span>
+            </button>
+            <button class="theme-option-btn" data-theme="cyberpunk-neon">
+              <span class="theme-preview" style="background: #0f051d; border-color: #ff007f;"></span>
+              <span>Cyberpunk Neon</span>
+            </button>
+            <button class="theme-option-btn" data-theme="matrix-green">
+              <span class="theme-preview" style="background: #020b04; border-color: #00ff66;"></span>
+              <span>Matrix Green</span>
+            </button>
+            <button class="theme-option-btn" data-theme="arctic-steel">
+              <span class="theme-preview" style="background: #0c1017; border-color: #00bcd4;"></span>
+              <span>Arctic Steel</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="setting-group danger-zone">
+          <label>Danger Zone</label>
+          <p class="setting-help">Irreversible database actions.</p>
+          <button id="clear-data-btn" class="danger-btn">Clear All Chats & Projects</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FUTURISTIC AUTH PORTAL MODAL -->
+  <div id="auth-modal-overlay" class="auth-modal-overlay" style="display: none;">
+    <div class="auth-card">
+      <div class="auth-card-decor"></div>
+      <div class="auth-header">
+        <h3 id="auth-title">System Authentication</h3>
+        <p id="auth-subtitle">Initialize secure cloud sync workspace.</p>
+      </div>
+      <div class="auth-tabs" id="auth-tabs">
+        <button class="auth-tab-btn active" id="auth-tab-signin" type="button">Sign In</button>
+        <button class="auth-tab-btn" id="auth-tab-signup" type="button">Sign Up</button>
+      </div>
+
+      <!-- Sign in / Sign up -->
+      <div id="auth-panel-main">
+        <form id="auth-form" class="auth-form">
+          <div class="auth-input-group">
+            <label for="auth-email">Email address</label>
+            <input type="email" id="auth-email" placeholder="you@company.com" required autocomplete="email">
+          </div>
+          <div class="auth-input-group">
+            <label for="auth-password">Password</label>
+            <div class="auth-password-wrap">
+              <input type="password" id="auth-password" placeholder="Enter your password" required autocomplete="current-password" minlength="8">
+              <button type="button" id="auth-toggle-password" class="auth-toggle-password" aria-label="Show password">Show</button>
+            </div>
+          </div>
+          <div class="auth-input-group" id="auth-confirm-group" style="display: none;">
+            <label for="auth-password-confirm">Confirm password</label>
+            <input type="password" id="auth-password-confirm" placeholder="Re-enter your password" autocomplete="new-password" minlength="8">
+          </div>
+          <ul class="auth-password-rules" id="auth-password-rules" style="display: none;">
+            <li id="auth-rule-length">At least 8 characters</li>
+            <li id="auth-rule-lower">One lowercase letter</li>
+            <li id="auth-rule-upper">One uppercase letter</li>
+            <li id="auth-rule-number">One number</li>
+          </ul>
+          <div class="auth-error-msg" id="auth-error-msg" style="display: none;"></div>
+          <div class="auth-success-msg" id="auth-success-msg" style="display: none;"></div>
+          <div class="auth-actions-row">
+            <button type="button" id="auth-forgot-btn" class="auth-forgot-btn">Forgot password?</button>
+            <button type="button" id="auth-resend-btn" class="auth-forgot-btn" style="display: none;">Resend confirmation email</button>
+          </div>
+          <button type="submit" id="auth-submit-btn" class="cyber-btn auth-submit-btn">
+            <span class="btn-text">Sign In</span>
+          </button>
+        </form>
+
+        <div class="auth-oauth-section" id="auth-oauth-section">
+          <div class="auth-divider auth-divider-compact">
+            <span>or continue with</span>
+          </div>
+          <button type="button" id="auth-google-btn" class="auth-google-btn">
+            <svg class="auth-google-icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+              <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+              <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/>
+              <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+            </svg>
+            <span>Continue with Google</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Email confirmation pending -->
+      <div id="auth-panel-confirm" class="auth-panel-alt" style="display: none;">
+        <div class="auth-info-box">
+          <span class="auth-info-icon">✉️</span>
+          <h4>Confirm your email</h4>
+          <p id="auth-confirm-email-text">We sent a confirmation link to your inbox. Open it to activate your account, then sign in.</p>
+        </div>
+        <button type="button" id="auth-resend-confirm-btn" class="cyber-btn auth-submit-btn">
+          <span class="btn-text">Resend Confirmation Email</span>
+        </button>
+        <button type="button" id="auth-back-to-signin-btn" class="auth-guest-btn">Back to Sign In</button>
+      </div>
+
+      <!-- Password reset (recovery link) -->
+      <div id="auth-panel-reset" class="auth-panel-alt" style="display: none;">
+        <div class="auth-info-box">
+          <span class="auth-info-icon">🔐</span>
+          <h4>Set a new password</h4>
+          <p>Choose a strong password for your quaasx-excel account.</p>
+        </div>
+        <form id="auth-reset-form" class="auth-form">
+          <div class="auth-input-group">
+            <label for="auth-new-password">New password</label>
+            <div class="auth-password-wrap">
+              <input type="password" id="auth-new-password" placeholder="New password" required minlength="8" autocomplete="new-password">
+              <button type="button" id="auth-toggle-new-password" class="auth-toggle-password" aria-label="Show password">Show</button>
+            </div>
+          </div>
+          <div class="auth-input-group">
+            <label for="auth-new-password-confirm">Confirm new password</label>
+            <input type="password" id="auth-new-password-confirm" placeholder="Confirm new password" required minlength="8" autocomplete="new-password">
+          </div>
+          <ul class="auth-password-rules" id="auth-reset-password-rules">
+            <li id="auth-reset-rule-length">At least 8 characters</li>
+            <li id="auth-reset-rule-lower">One lowercase letter</li>
+            <li id="auth-reset-rule-upper">One uppercase letter</li>
+            <li id="auth-reset-rule-number">One number</li>
+          </ul>
+          <div class="auth-error-msg" id="auth-reset-error-msg" style="display: none;"></div>
+          <div class="auth-success-msg" id="auth-reset-success-msg" style="display: none;"></div>
+          <button type="submit" id="auth-reset-submit-btn" class="cyber-btn auth-submit-btn">
+            <span class="btn-text">Update Password</span>
+          </button>
+        </form>
+      </div>
+
+      <div class="auth-divider" id="auth-guest-divider">
+        <span>or</span>
+      </div>
+      <button id="auth-guest-btn" class="auth-guest-btn">
+        Continue in Guest Mode (Offline/Local)
+      </button>
+    </div>
+  </div>
+</body>
+</html>
