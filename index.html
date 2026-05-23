@@ -621,6 +621,20 @@
       <section class="chat-panel">
         <div class="panel-header">
           <h2>💬 Chat</h2>
+          <div class="mode-selector">
+            <button class="mode-btn active" data-mode="build" title="Generate or modify the spreadsheet directly">
+              <span class="mode-icon">⚡</span>
+              <span class="mode-label">Build</span>
+            </button>
+            <button class="mode-btn" data-mode="plan" title="Get a step-by-step plan before changes">
+              <span class="mode-icon">📋</span>
+              <span class="mode-label">Plan</span>
+            </button>
+            <button class="mode-btn" data-mode="ask" title="Ask / Discuss ideas: i will help u to make it to reality">
+              <span class="mode-icon">💡</span>
+              <span class="mode-label">Ask</span>
+            </button>
+          </div>
         </div>
         <div class="chat-messages" id="chat-messages">
           <div class="welcome-message">
@@ -634,20 +648,6 @@
           </div>
         </div>
         <div class="chat-input-area">
-          <div class="mode-selector">
-            <button class="mode-btn active" data-mode="build" title="Generate or modify the spreadsheet directly">
-              <span class="mode-icon">⚡</span>
-              <span class="mode-label">Build</span>
-            </button>
-            <button class="mode-btn" data-mode="plan" title="Get a step-by-step plan before changes">
-              <span class="mode-icon">📋</span>
-              <span class="mode-label">Plan</span>
-            </button>
-            <button class="mode-btn" data-mode="ask" title="Ask / Discuss ideas: i will help u to make it to reality">
-              <span class="mode-icon">💡</span>
-              <span class="mode-label">Ask / Discuss ideas</span>
-            </button>
-          </div>
           <div class="premium-chat-box">
             <textarea id="user-input" placeholder="Describe your spreadsheet..." rows="1"></textarea>
             <div id="file-preview" class="file-preview"></div>

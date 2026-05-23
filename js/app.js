@@ -257,7 +257,6 @@
       // Reset file input so the same file can be re-uploaded
       fileInput.value = '';
     });
-
     // Send button click (doubles as stop button during generation)
     sendBtn.addEventListener('click', function () {
       if (isGenerating) {
@@ -275,6 +274,44 @@
       }
     });
 
+    // Paste handler for copy-pasting images directly into the chat area
+    userInput.addEventListener('paste', async function (e) {
+      var clipboardData = e.clipboardData || window.clipboardData;
+      if (!clipboardData) return;
+
+      var items = clipboardData.items;
+      for (var i = 0; i < items.length; i++) {
+        var item = items[i];
+        if (item.type.indexOf('image') !== -1) {
+          e.preventDefault(); // Prevent pasting raw base64 or characters if it's an image
+          var file = item.getAsFile();
+          if (!file) continue;
+
+          var pastedName = 'pasted_image_' + Math.floor(Date.now() / 1000) + '.png';
+          var renamedFile = new File([file], pastedName, { type: file.type });
+
+          try {
+            var processed = await window.AIService.processFile(renamedFile);
+            
+            // Upload to Supabase Storage if connected
+            if (supabase && window.supabaseLoggedIn) {
+              var cloudUrl = await uploadFileToSupabase(renamedFile);
+              if (cloudUrl) {
+                processed.content = cloudUrl;
+                processed.cloudUrl = cloudUrl;
+              }
+            }
+            
+            attachedFiles.push(processed);
+            renderFileChips();
+            updateSendBtnState();
+          } catch (err) {
+            console.error('Error processing pasted image:', err);
+            addChatMessage('Failed to process pasted image: ' + err.message, 'error');
+          }
+        }
+      }
+    });
     // Mode selector buttons
     document.querySelectorAll('.mode-btn').forEach(function (btn) {
       btn.addEventListener('click', function () {
@@ -521,7 +558,7 @@
       var fileNames = attachedFiles.map(function (f) { return f.name; }).join(', ');
       displayText = (messageText ? messageText + '\n' : '') + '📎 ' + fileNames;
     }
-    addChatMessage(displayText, 'user');
+    addChatMessage(displayText, 'user', attachedFilesCopy);
 
     // Build messages array with mode-appropriate system prompt
     var systemPrompt = MODE_PROMPTS[currentMode] || MODE_PROMPTS.build;
@@ -895,10 +932,37 @@
   }
 
   // ========== CHAT HELPERS ==========
-  function addChatMessage(text, type) {
+  function addChatMessage(text, type, files) {
     var div = document.createElement('div');
     div.className = 'chat-message ' + type;
-    div.textContent = text;
+    div.textContent = text || '';
+
+    // Render attachments if any
+    if (files && files.length > 0) {
+      var attachmentsDiv = document.createElement('div');
+      attachmentsDiv.className = 'message-attachments';
+      
+      files.forEach(function (file) {
+        if (file.type === 'image') {
+          var img = document.createElement('img');
+          img.className = 'message-attachment-image';
+          img.src = file.content;
+          img.addEventListener('click', function () {
+            var win = window.open();
+            if (win) {
+              win.document.write('<iframe src="' + file.content + '" frameborder="0" style="border:0; top:0px; left:0px; bottom:0px; right:0px; width:100%; height:100%;" allowfullscreen></iframe>');
+            }
+          });
+          attachmentsDiv.appendChild(img);
+        } else {
+          var docChip = document.createElement('div');
+          docChip.className = 'message-attachment-file';
+          docChip.innerHTML = '📄 <span style="font-weight: 500;">' + file.name + '</span>';
+          attachmentsDiv.appendChild(docChip);
+        }
+      });
+      div.appendChild(attachmentsDiv);
+    }
 
     // Add Convert to Plan button for assistant messages
     if (type === 'assistant') {
@@ -929,7 +993,7 @@
     }
 
     // Track for persistence
-    chatDisplayMessages.push({ text: text, type: type });
+    chatDisplayMessages.push({ text: text, type: type, files: files || null });
 
     // Auto-name project from first user message
     if (type === 'user' && chatDisplayMessages.filter(function (m) { return m.type === 'user'; }).length === 1) {
@@ -1040,6 +1104,13 @@
     attachedFiles.forEach(function (file, index) {
       var chip = document.createElement('div');
       chip.className = 'file-chip';
+
+      if (file.type === 'image') {
+        var img = document.createElement('img');
+        img.className = 'file-chip-thumb';
+        img.src = file.content;
+        chip.appendChild(img);
+      }
 
       var nameSpan = document.createElement('span');
       nameSpan.className = 'file-chip-name';
@@ -1833,7 +1904,34 @@
       } else {
         var div = document.createElement('div');
         div.className = 'chat-message ' + msg.type;
-        div.textContent = msg.text;
+        div.textContent = msg.text || '';
+
+        // Render attachments if any
+        if (msg.files && msg.files.length > 0) {
+          var attachmentsDiv = document.createElement('div');
+          attachmentsDiv.className = 'message-attachments';
+          
+          msg.files.forEach(function (file) {
+            if (file.type === 'image') {
+              var img = document.createElement('img');
+              img.className = 'message-attachment-image';
+              img.src = file.content;
+              img.addEventListener('click', function () {
+                var win = window.open();
+                if (win) {
+                  win.document.write('<iframe src="' + file.content + '" frameborder="0" style="border:0; top:0px; left:0px; bottom:0px; right:0px; width:100%; height:100%;" allowfullscreen></iframe>');
+                }
+              });
+              attachmentsDiv.appendChild(img);
+            } else {
+              var docChip = document.createElement('div');
+              docChip.className = 'message-attachment-file';
+              docChip.innerHTML = '📄 <span style="font-weight: 500;">' + file.name + '</span>';
+              attachmentsDiv.appendChild(docChip);
+            }
+          });
+          div.appendChild(attachmentsDiv);
+        }
         
         // Add Convert to Plan button for assistant messages
         if (msg.type === 'assistant') {
