@@ -58,6 +58,8 @@
   var downloadBtn;
   var uploadXlsxBtn;
   var uploadXlsxInput;
+  var tabsPrevBtn;
+  var tabsNextBtn;
   var spreadsheetContainer;
   var emptyState;
   var loadingIndicator;
@@ -119,6 +121,8 @@
     downloadBtn = document.getElementById('download-btn');
     uploadXlsxBtn = document.getElementById('upload-xlsx-btn');
     uploadXlsxInput = document.getElementById('upload-xlsx-input');
+    tabsPrevBtn = document.getElementById('tabs-prev-btn');
+    tabsNextBtn = document.getElementById('tabs-next-btn');
     spreadsheetContainer = document.getElementById('spreadsheet-container');
     emptyState = document.getElementById('empty-state');
     loadingIndicator = document.getElementById('loading-indicator');
@@ -472,6 +476,53 @@
         }
       });
     }
+
+    // Sheet tabs navigation and mouse drag-to-scroll gestures
+    if (tabsPrevBtn && tabsNextBtn && sheetTabs) {
+      tabsPrevBtn.addEventListener('click', function () {
+        sheetTabs.scrollBy({ left: -180, behavior: 'smooth' });
+      });
+      tabsNextBtn.addEventListener('click', function () {
+        sheetTabs.scrollBy({ left: 180, behavior: 'smooth' });
+      });
+
+      // Synchronize arrow button disabled/dimmed states on scroll
+      sheetTabs.addEventListener('scroll', updateTabArrowsVisibility);
+      
+      // Drag to scroll gestures
+      var isDown = false;
+      var startX;
+      var scrollLeftVal;
+
+      sheetTabs.addEventListener('mousedown', function (e) {
+        if (sheetTabs.scrollWidth <= sheetTabs.clientWidth) return;
+        isDown = true;
+        sheetTabs.classList.add('dragging');
+        startX = e.pageX - sheetTabs.offsetLeft;
+        scrollLeftVal = sheetTabs.scrollLeft;
+      });
+
+      sheetTabs.addEventListener('mouseleave', function () {
+        isDown = false;
+        sheetTabs.classList.remove('dragging');
+      });
+
+      sheetTabs.addEventListener('mouseup', function () {
+        isDown = false;
+        sheetTabs.classList.remove('dragging');
+      });
+
+      sheetTabs.addEventListener('mousemove', function (e) {
+        if (!isDown) return;
+        e.preventDefault();
+        var x = e.pageX - sheetTabs.offsetLeft;
+        var walk = (x - startX) * 1.5; // Scroll speed factor
+        sheetTabs.scrollLeft = scrollLeftVal - walk;
+      });
+    }
+
+    // Update tab arrows on resize
+    window.addEventListener('resize', updateTabArrowsVisibility);
 
     // View toggle buttons
     if (viewToggle) {
@@ -1167,6 +1218,40 @@
 
       sheetTabs.appendChild(btn);
     });
+
+    // Check overflow after rendering (uses setTimeout to ensure reflow completes)
+    setTimeout(updateTabArrowsVisibility, 50);
+  }
+
+  function updateTabArrowsVisibility() {
+    if (!sheetTabs || !tabsPrevBtn || !tabsNextBtn) return;
+    
+    var hasOverflow = sheetTabs.scrollWidth > sheetTabs.clientWidth;
+    if (hasOverflow) {
+      tabsPrevBtn.style.display = 'flex';
+      tabsNextBtn.style.display = 'flex';
+      
+      // Update opacity and pointerEvents for disabled states
+      if (sheetTabs.scrollLeft <= 5) {
+        tabsPrevBtn.style.opacity = '0.3';
+        tabsPrevBtn.style.pointerEvents = 'none';
+      } else {
+        tabsPrevBtn.style.opacity = '1';
+        tabsPrevBtn.style.pointerEvents = 'auto';
+      }
+      
+      var remainingScroll = sheetTabs.scrollWidth - sheetTabs.clientWidth - sheetTabs.scrollLeft;
+      if (remainingScroll <= 5) {
+        tabsNextBtn.style.opacity = '0.3';
+        tabsNextBtn.style.pointerEvents = 'none';
+      } else {
+        tabsNextBtn.style.opacity = '1';
+        tabsNextBtn.style.pointerEvents = 'auto';
+      }
+    } else {
+      tabsPrevBtn.style.display = 'none';
+      tabsNextBtn.style.display = 'none';
+    }
   }
 
   // ========== RENDER ACTIVE SHEET ==========

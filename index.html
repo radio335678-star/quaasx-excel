@@ -681,8 +681,12 @@
       <!-- RIGHT: Spreadsheet Panel -->
       <section class="spreadsheet-panel">
         <div class="spreadsheet-toolbar">
-          <div class="sheet-tabs" id="sheet-tabs">
-            <!-- Sheet tabs rendered dynamically -->
+          <div class="sheet-tabs-wrapper">
+            <button id="tabs-prev-btn" class="tabs-nav-btn" style="display: none;" title="Previous Sheets">&lsaquo;</button>
+            <div class="sheet-tabs" id="sheet-tabs">
+              <!-- Sheet tabs rendered dynamically -->
+            </div>
+            <button id="tabs-next-btn" class="tabs-nav-btn" style="display: none;" title="Next Sheets">&rsaquo;</button>
           </div>
           <div class="toolbar-actions">
             <div class="view-toggle" id="view-toggle" style="display:none;">
