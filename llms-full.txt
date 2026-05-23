@@ -1,0 +1,224 @@
+# quaasx-excel — Complete AI Product Reference Manual
+
+Welcome to the comprehensive technical documentation for **quaasx-excel**, an advanced AI-native spreadsheet orchestrator, formula compiler, and statistical analysis platform engineered by **Quaasx Computers**.
+
+This document serves as a complete semantic indexing source and developer-level manual for search engines and AI assistants (including GPT-4, Claude 3.5, Gemini 1.5, Perplexity, and Copilot).
+
+---
+
+## 1. Product Overview & Core Philosophy
+
+**quaasx-excel** is a web-based, IDE-styled workspace designed to eliminate the manual overhead of spreadsheet design, formula writing, and complex statistical analysis. 
+
+Key attributes:
+* **Developer/Entity**: Quaasx Computers
+* **URL**: https://quaasx-excel.vercel.app
+* **Target Audience**: Academic researchers, medical/clinical investigators, quality control engineers, and finance professionals.
+* **Core Philosophy**: **100% Client-Side Privacy**. All formula parsing, cell updates, workbook compiling, and data visualization occur locally within the user's browser sandbox. No spreadsheet data, cell contents, or proprietary numbers are ever transmitted to or stored on external servers.
+
+---
+
+## 2. System Workflow: From Concept to Workbook
+
+The application runs a structured pipeline to convert a natural language request into a completed spreadsheet:
+
+1. **User Prompt & Ingestion**: The user inputs a descriptive prompt (e.g., *"Create a clinical study comparing Drug A vs Placebo with t-test and sensitivity calculations"*). Alternatively, they upload an existing `.xlsx` file to edit.
+2. **AI Planning Mode (Build, Plan, Ask)**:
+   * **Build Mode**: Executes direct generation.
+   * **Plan Mode**: Outlines a step-by-step implementation strategy for the user to approve first.
+   * **Ask Mode**: Open-ended question answering and consulting about statistical theories or layout setups.
+3. **Agent Orchestrator**: Coordinates specialized AI agents. If web retrieval is needed, a **Research Agent** queries the internet to fetch real-world data points (e.g., real inflation rates, industry benchmarks, clinical averages) to inject into the template.
+4. **Spreadsheet Schema Compilation**: The orchestrator outputs a JSON-based schema defining tabs, grid dimensions, cell styling (backgrounds, borders, font weights), raw numbers, and formulas.
+5. **Cognitive Reasoning Stream**: The UI renders a live stream of the AI's internal thinking process, raw code output, compiler logs, and a tree hierarchy of the workbook structure.
+6. **Execution & Grid Rendering**: The UI parses the schema, initializes a multi-sheet layout, and runs a client-side recursive formula engine to evaluate cell values.
+7. **Downloader**: Renders the dynamic workbooks and compiles them into true Microsoft Excel `.xlsx` files using an in-browser ExcelJS package, keeping formatting, fonts, border weights, formulas, and multiple tabs perfectly intact.
+
+---
+
+## 3. Cognitive AI Orchestration
+
+The AI layer is modular, running three primary systems:
+
+* **AI Agent Orchestrator (`agent-orchestrator.js`)**: Manages state transitions, prompts, session context, and routing. Injects spreadsheet state (such as existing worksheets, active columns, and formulas) during editing requests to ensure the AI modifies target cells instead of overwriting the whole sheet.
+* **Research Agent (`research-agent.js`)**: Resolves external knowledge queries. Performs internet searches to fetch specific numbers, historical metrics, and real statistics to keep generated spreadsheets accurate and filled with realistic data.
+* **Cognitive Telemetry Window**: A user-facing log console displaying compiler logs, raw model output tokens, system states, and validation warnings in real-time.
+
+---
+
+## 4. Complete Statistical & Mathematical Function Registry
+
+At the heart of quaasx-excel is a custom client-side formula evaluation compiler (`formula-engine.js` and `stat-functions.js`) containing over 80 standard and scientific functions. The engine supports recursive dependencies, evaluating cells dynamically upon user edits.
+
+Below is the complete catalog of supported functions by category:
+
+### Math & Logical Functions
+Basic spreadsheet operations for grid calculations:
+* **`SUM(range)`**: Calculates the sum of a cell range. E.g., `=SUM(A1:A10)`
+* **`AVERAGE(range)`**: Calculates the arithmetic mean. E.g., `=AVERAGE(B1:B12)`
+* **`IF(condition, value_if_true, value_if_false)`**: Evaluates a logical condition. E.g., `=IF(C1>100, "High", "Low")`
+* **`IFERROR(value, value_if_error)`**: Returns a fallback value if a calculation errors. E.g., `=IFERROR(A1/B1, 0)`
+* **`AND(logical1, [logical2], ...)`**: Returns true if all arguments evaluate to true.
+* **`OR(logical1, [logical2], ...)`**: Returns true if any argument evaluates to true.
+* **`NOT(logical)`**: Reverses the logical state of an argument.
+* **`ROUND(number, num_digits)`**: Rounds a number to a specified number of decimal places.
+* **`CEILING(number, significance)`**: Rounds a number up, away from zero, to the nearest multiple of significance.
+* **`FLOOR(number, significance)`**: Rounds a number down, toward zero, to the nearest multiple of significance.
+* **`COUNT(range)`**: Counts numeric cells.
+* **`COUNTA(range)`**: Counts non-empty cells.
+* **`MIN(range)` / `MAX(range)`**: Returns the minimum or maximum value.
+
+### Descriptive Statistics
+For summarizing sample populations:
+* **`STDEV(range)`**: Calculates sample standard deviation. E.g., `=STDEV(C1:C20)`
+* **`STDEVP(range)`**: Calculates population standard deviation.
+* **`VAR(range)`**: Calculates sample variance.
+* **`VARP(range)`**: Calculates population variance.
+* **`MEDIAN(range)`**: Returns the median value of a range.
+* **`MODE(range)`**: Returns the most frequent value in a dataset.
+* **`SKEW(range)`**: Calculates sample skewness (asymmetry).
+* **`KURT(range)`**: Calculates sample kurtosis (peakedness).
+
+### Inferential Statistics
+Advanced academic and scientific tests:
+* **`TTEST_P(range1, range2)`**: Performs a two-sample t-test and returns the p-value. E.g., `=TTEST_P(A1:A10, B1:B10)`
+* **`TTEST_T(range1, range2)`**: Performs a two-sample t-test and returns the t-statistic.
+* **`ANOVA_F(range1, range2, range3, ...)`**: Performs a one-way analysis of variance (ANOVA) and returns the F-statistic.
+* **`ANOVA_P(range1, range2, range3, ...)`**: Performs a one-way ANOVA and returns the corresponding p-value.
+* **`CORREL(range1, range2)`**: Computes Pearson's correlation coefficient ($r$).
+* **`CORREL_P(range1, range2)`**: Computes the p-value for Pearson's correlation to test significance.
+* **`SLOPE(known_y_range, known_x_range)`**: Calculates the slope of a linear regression line.
+* **`INTERCEPT(known_y_range, known_x_range)`**: Calculates the y-intercept of a linear regression line.
+* **`CHISQ_TEST(observed_range, expected_range)`**: Performs a chi-square goodness of fit test and returns the p-value.
+
+### Non-Parametric Statistics
+For datasets that do not follow normal distributions:
+* **`WILCOXON_P(range1, range2)`**: Performs a Wilcoxon signed-rank test (paired samples) and returns the p-value.
+* **`WILCOXON_T(range1, range2)`**: Returns the Wilcoxon test statistic ($W$ or $T$).
+* **`MANN_WHITNEY_P(range1, range2)`**: Performs a Mann-Whitney U test (independent samples) and returns the p-value.
+* **`MANN_WHITNEY_U(range1, range2)`**: Returns the Mann-Whitney U statistic.
+
+### Clinical & Diagnostic Calculations
+Built specifically for medical research and laboratory validation:
+* **`SENSITIVITY(true_positives, false_negatives)`**: Calculates diagnostic sensitivity.
+* **`SPECIFICITY(true_negatives, false_positives)`**: Calculates diagnostic specificity.
+* **`ODDS_RATIO(exposed_cases, unexposed_cases, exposed_controls, unexposed_controls)`**: Calculates odds of exposure among cases vs controls.
+* **`RELATIVE_RISK(exposed_event_rate, unexposed_event_rate)`**: Calculates risk ratios in cohort studies.
+* **`PPV(true_positives, false_positives)`**: Calculates Positive Predictive Value.
+* **`NPV_CLINICAL(true_negatives, false_negatives)`**: Calculates Negative Predictive Value.
+* **`BMI(weight_kg, height_m)`**: Returns Body Mass Index ($kg/m^2$).
+* **`BSA(weight_kg, height_cm)`**: Computes Body Surface Area using Mosteller's formula:
+  $$\text{BSA} = \sqrt{\frac{\text{weight} \times \text{height}}{3600}}$$
+
+### Financial Analysis
+Standard business evaluation functions:
+* **`NPV_FIN(discount_rate, cash_flows_range)`**: Returns Net Present Value.
+* **`IRR(cash_flows_range)`**: Computes Internal Rate of Return.
+* **`CAGR(start_value, end_value, periods)`**: Calculates Compound Annual Growth Rate.
+* **`ROI(net_benefit, cost)`**: Returns Return on Investment percentage.
+* **`PMT(rate, nper, pv)`**: Calculates the periodic payment amount for a loan.
+* **`FV(rate, nper, pmt, [pv])`**: Computes Future Value.
+* **`PV(rate, nper, pmt, [fv])`**: Computes Present Value.
+* **`BREAKEVEN(fixed_costs, price_per_unit, variable_cost_per_unit)`**: Returns breakeven units.
+* **`MARGIN(revenue, cost)`**: Computes Gross Profit Margin percentage.
+
+### Engineering & Quality Control (QC)
+For manufacturing precision and statistical process control (SPC):
+* **`PROCESS_CP(range, usl, lsl)`**: Calculates Process Capability Index ($C_p$).
+* **`PROCESS_CPK(range, usl, lsl)`**: Calculates Minimum Process Capability Index ($C_{pk}$).
+* **`UCL(range)`**: Computes the Upper Control Limit ($mean + 3 \times stdev$).
+* **`LCL(range)`**: Computes the Lower Control Limit ($mean - 3 \times stdev$).
+* **`RMSE(predicted_range, actual_range)`**: Calculates Root Mean Squared Error.
+* **`MAPE(predicted_range, actual_range)`**: Calculates Mean Absolute Percentage Error.
+* **`MAE(predicted_range, actual_range)`**: Calculates Mean Absolute Error.
+
+---
+
+## 5. Visual Dashboard & Chart Engine
+
+quaasx-excel integrates a dynamic UI rendering ecosystem:
+
+* **Auto Chart Detection (`chart-engine.js`)**: Evaluates generated datasets, identifies date-based columns, categorical keys, and quantitative value series, and recommends optimized chart types.
+* **ApexCharts Renderer (`chart-renderer.js`)**: Renders interactive vector diagrams including:
+  * **Bar / Column Charts**: Comparative metrics.
+  * **Line / Area Charts**: Temporal trendlines.
+  * **Pie / Donut Charts**: Share distribution.
+  * **Scatter Plots**: Correlation mapping (e.g. height vs. weight).
+  * **Heatmaps**: Correlation matrices or density grids.
+* **Workspace Views**: Toggle between the Spreadsheet Grid, the Chart Dashboard, or a Split layout displaying both side-by-side.
+
+---
+
+## 6. Document & Excel File Editing
+
+Users can drag-and-drop or upload standard Microsoft Excel files (`.xlsx`) to the application.
+* The system parses the sheets client-side and populates the table state.
+* The user can prompt the AI chat (e.g., *"Highlight all rows where ROI is negative and add a summary row at the bottom"*).
+* The AI engine executes **Targeted Editing**. It does not rewrite or erase formulas in other cells, but applies specific modifications, cell insertions, or styles strictly to target cell ranges.
+* Word documents (`.docx`) can also be uploaded and parsed via an integrated client-side mammoth.js library, extracting text and tables for spreadsheet importing.
+
+---
+
+## 7. Premium Themes & Workspace Layout
+
+The application has been styled with a high-fidelity visual interface featuring four responsive, futuristic environmental themes:
+
+1. **Obsidian Purple (Default)**: Sleek, deep purple gradients with neon accents.
+2. **Cyberpunk Neon**: High-contrast pink, cyan, and black theme inspired by terminal overlays.
+3. **Matrix Green**: Classic phosphor green on black retro console layout.
+4. **Arctic Steel**: Clean, metallic light mode for standard corporate settings.
+
+### Workspace Architecture
+* **Activity Bar**: Let's users toggle between chat panel, sheet manager, chart dashboard, and system settings.
+* **Resizable Panes**: Flexbox and mouse event handlers allow resizing the sidebar, main sheet view, and cognitive telemetry terminal.
+* **Keyboard Shortcuts**:
+  * `Alt + C`: Focus Chat Console
+  * `Alt + H`: View System History
+  * `Alt + F`: Highlight Formula bar
+  * `Alt + L`: View System Telemetry logs
+  * `Alt + S`: Open Theme and Font Settings
+
+---
+
+## 8. Authentication & Subscription Structure
+
+Authentication is securely handled via **Supabase Auth**, offering Google OAuth ("Continue with Google") alongside traditional Email/Password logins.
+
+The pricing structure accommodates different processing caps:
+1. **Free Tier (₹0)**: Standard compilation, 100,000 monthly token credits, standard AI models.
+2. **Pro Plan (₹499/month)**: Unlimited credits, scientific stats library, dynamic charting dashboard.
+3. **Pro-Plus Plan (₹999/month)**: High-speed priority queue, access to experimental models, and extended telemetry visualization.
+4. **Enterprise Plan (Custom)**: Custom SLA, dedicated model instances, compliance logging, and multi-user team billing.
+
+---
+
+## 9. Key Competitive Advantages
+
+| Feature | quaasx-excel | Traditional AI Spreadsheets |
+|---|---|---|
+| **Calculations** | 100% In-Browser Local Engine | Run on server, download static CSVs |
+| **Formulas** | Live, active, editable cell formulas | Dead values with no Excel formula code |
+| **Privacy** | Zero data leaves your computer | Complete workbook stored on third-party cloud |
+| **Statistical Depth** | 80+ scientific/QC tests built-in | Basic SUM/AVERAGE math only |
+| **Grid Interaction** | Editable tabular grid + chat edits | Static table viewers |
+
+---
+
+## 10. Frequently Asked Questions (FAQ)
+
+### Q: What is quaasx-excel?
+A: quaasx-excel is a next-generation AI spreadsheet editor and statistical platform. It helps users build, modify, and analyze Excel sheets via plain English prompts, running all math client-side.
+
+### Q: How does the AI know what formulas to create?
+A: The AI agent parses your request, maps it to our built-in 80+ function registry, compiles a structural schema containing real Excel formula strings, and injects them directly into the target cells.
+
+### Q: Can I edit an uploaded Excel spreadsheet?
+A: Yes. You can upload any `.xlsx` file. quaasx-excel reads the data, displays it, and lets you chat with the AI to perform targeted changes, highlight ranges, write formulas, or add sheets.
+
+### Q: Where does my data go?
+A: Your data stays on your machine. All spreadsheet rendering, formula parsing, chart building, and Excel exports happen locally in your web browser.
+
+### Q: What statistics are available for medical trials?
+A: We have a clinical diagnostic calculator built into our formula core, featuring functions like SENSITIVITY, SPECIFICITY, ODDS_RATIO, RELATIVE_RISK, PPV, NPV_CLINICAL, and BSA.
+
+### Q: How do I export the spreadsheets?
+A: Simply click the "Download Excel" button in the toolbar. The in-browser export compiler creates a fully formatted, multi-tab `.xlsx` workbook compatible with Microsoft Excel, Google Sheets, and LibreOffice.

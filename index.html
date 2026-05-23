@@ -3,12 +3,221 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>quaasx-excel | Powered by Quaasx Computers</title>
-  <meta name="description" content="Generate professional spreadsheets instantly using AI. Describe what you need and let AI create structured, downloadable Excel files for you.">
+  
+  <!-- Primary SEO Meta Tags -->
+  <title>quaasx-excel | AI Spreadsheet Generator — Create, Edit & Analyze Excel Files with AI</title>
+  <meta name="description" content="Generate, edit, and analyze Excel spreadsheets using AI. Convert natural language descriptions into fully functional, formula-equipped multi-sheet workbooks in browser.">
+  <meta name="keywords" content="AI spreadsheet generator, AI Excel sheet maker, create Excel with AI, edit Excel with AI, statistical analysis tool online, live formula engine, medical statistics calculator, financial NPV IRR, engineering QC Cpk, ApexCharts generator, client-side spreadsheet privacy">
+  <link rel="canonical" href="https://quaasx-excel.vercel.app">
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
+  <meta name="author" content="Quaasx Computers">
+  <meta name="theme-color" content="#7c3aed">
+  <meta name="application-name" content="quaasx-excel">
+  <meta name="apple-mobile-web-app-title" content="quaasx-excel">
+  
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://quaasx-excel.vercel.app">
+  <meta property="og:title" content="quaasx-excel | AI Spreadsheet Generator">
+  <meta property="og:description" content="Generate, edit, and analyze Excel spreadsheets using AI. Convert natural language into formula-equipped workbooks instantly in-browser.">
+  <meta property="og:image" content="https://quaasx-excel.vercel.app/favicon-512.png">
+  <meta property="og:site_name" content="quaasx-excel">
+  <meta property="og:locale" content="en_US">
+  
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:url" content="https://quaasx-excel.vercel.app">
+  <meta name="twitter:title" content="quaasx-excel | AI Spreadsheet Generator">
+  <meta name="twitter:description" content="Generate, edit, and analyze Excel spreadsheets using AI. Convert natural language into formula-equipped workbooks instantly in-browser.">
+  <meta name="twitter:image" content="https://quaasx-excel.vercel.app/favicon-512.png">
+  <meta name="twitter:site" content="@quaasx">
+  
+  <!-- Favicons and Manifest -->
+  <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="/favicon-512.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/favicon-192.png">
+  <link rel="manifest" href="/manifest.json">
+  
+  <!-- DNS Preconnect for Performance -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net">
+  <link rel="dns-prefetch" href="https://fonts.googleapis.com">
+  <link rel="dns-prefetch" href="https://fonts.gstatic.com">
+  <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+  
+  <!-- Google Fonts & Stylesheets -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&family=Share+Tech+Mono&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
+  
   <!-- Supabase JS Client SDK -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  
+  <!-- JSON-LD Structured Data -->
+  <script type="application/ld+json">
+  [
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "quaasx-excel",
+      "applicationCategory": "BusinessApplication",
+      "operatingSystem": "Web Browser",
+      "offers": [
+        {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "INR",
+          "name": "Free Tier"
+        },
+        {
+          "@type": "Offer",
+          "price": "499",
+          "priceCurrency": "INR",
+          "name": "Pro Plan"
+        },
+        {
+          "@type": "Offer",
+          "price": "999",
+          "priceCurrency": "INR",
+          "name": "Pro-Plus Plan"
+        }
+      ],
+      "featureList": [
+        "AI-powered spreadsheet generation from natural language",
+        "80+ statistical functions (t-test, ANOVA, correlation, regression)",
+        "Live formula engine with client-side computation",
+        "Interactive charts with auto-detection (bar, line, pie, scatter, heatmap)",
+        "Upload and edit .xlsx files with AI chat",
+        "Multi-sheet workbook support with tab navigation",
+        "Clinical statistics (Sensitivity, Specificity, Odds Ratio, PPV/NPV)",
+        "Financial analysis (NPV, IRR, CAGR, ROI, PMT, Breakeven)",
+        "Engineering QC (Cpk, UCL/LCL, RMSE, MAPE)",
+        "4 premium UI themes",
+        "100% client-side calculations for data privacy",
+        "AI reasoning transparency with cognitive window"
+      ]
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "Quaasx Computers",
+      "url": "https://quaasx-excel.vercel.app",
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "email": "info@quaasx108.com",
+        "contactType": "customer support"
+      }
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "quaasx-excel",
+      "url": "https://quaasx-excel.vercel.app"
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is quaasx-excel?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "quaasx-excel is an AI-powered spreadsheet creator and statistical analyzer designed by Quaasx Computers. It generates dynamic, formula-enabled Excel files directly from text descriptions."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How does AI generate spreadsheets in quaasx-excel?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "You simply describe the structure, formulas, or analysis you need in plain English. The AI planning and compilation engine builds a complete multi-sheet workbook matching your schema."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What statistical tests are supported?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "It supports over 80 functions, including descriptive stats, inferential tests (t-tests, ANOVA, linear regression, correlation), non-parametric methods (Wilcoxon, Mann-Whitney), and quality control metrics (Cpk, UCL, LCL)."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I upload and edit existing Excel files?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. You can upload any standard .xlsx workbook, view it in our interactive grid, and use AI chat to make targeted modifications, edits, or add new calculations without losing original formatting."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is my spreadsheet data safe and private?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Absolutely. quaasx-excel uses a 100% client-side compilation and evaluation engine. All formulas, charts, and data remain entirely in your browser sandbox, and zero spreadsheet content is saved to external servers."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What chart types are available?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Our visualization engine automatically detects your column headers and metric types, rendering interactive ApexCharts including bar, line, pie, area, scatter, and heatmaps."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What industries is quaasx-excel built for?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "quaasx-excel is tailormade for Clinical & Medical researchers (with Sensitivity, Specificity, Odds Ratio), Academic researchers (t-tests, ANOVA, Chi-Square), Manufacturing QC (Process Capability Cpk, UCL/LCL), and Finance professionals (NPV, IRR, CAGR)."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How much does quaasx-excel cost?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "We offer a Free Tier with 100k token credits, a Pro Plan at ₹499/month for unlimited tokens and scientific stats, and a Pro-Plus Plan at ₹999/month for experimental AI models and advanced telemetry."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does quaasx-excel support live formulas?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes, we built a client-side recursive formula engine that parses Excel-like formulas (e.g. SUM, AVERAGE, IF) and updates values dynamically when you edit cell inputs."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What AI models power the spreadsheet orchestration?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Our multi-agent system uses advanced large language models optimized for planning, structural spreadsheet compilation, and web research, coordinating via our agent orchestrator."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I use it for medical or clinical research?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. The diagnostic calculator supports standard medical statistics functions like SENSITIVITY, SPECIFICITY, ODDS_RATIO, RELATIVE_RISK, PPV, NPV_CLINICAL, BMI, and BSA."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How is this different from generic AI tools like ChatGPT for spreadsheets?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "ChatGPT outputs dead CSV text or Python code. quaasx-excel compiles fully working spreadsheets with real, live cell-linked Excel formulas and active charts, letting you work interactively right in the grid."
+          }
+        }
+      ]
+    }
+  ]
+  </script>
 </head>
 <body>
   <!-- FUTURISTIC LANDING PAGE -->

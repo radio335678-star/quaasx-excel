@@ -5,7 +5,14 @@
     { "src": "js/*.js", "use": "@vercel/static" },
     { "src": "css/*.css", "use": "@vercel/static" },
     { "src": "index.html", "use": "@vercel/static" },
-    { "src": "googlef3d38e0c33d9aa00.html", "use": "@vercel/static" }
+    { "src": "googlef3d38e0c33d9aa00.html", "use": "@vercel/static" },
+    { "src": "sitemap.xml", "use": "@vercel/static" },
+    { "src": "robots.txt", "use": "@vercel/static" },
+    { "src": "llms.txt", "use": "@vercel/static" },
+    { "src": "llms-full.txt", "use": "@vercel/static" },
+    { "src": "manifest.json", "use": "@vercel/static" },
+    { "src": "favicon-192.png", "use": "@vercel/static" },
+    { "src": "favicon-512.png", "use": "@vercel/static" }
   ],
   "routes": [
     { "src": "/api/config", "dest": "/api/config.js" },
@@ -13,6 +20,39 @@
     { "src": "/api/parse-document", "dest": "/api/parse-document.js" },
     { "src": "/api/proxy", "dest": "/api/proxy.js" },
     { "src": "/api/research", "dest": "/api/research.js" },
+    { "src": "/sitemap.xml", "dest": "/sitemap.xml" },
+    { "src": "/robots.txt", "dest": "/robots.txt" },
+    { "src": "/llms.txt", "dest": "/llms.txt" },
+    { "src": "/llms-full.txt", "dest": "/llms-full.txt" },
+    { "src": "/manifest.json", "dest": "/manifest.json" },
+    { "src": "/favicon-192.png", "dest": "/favicon-192.png" },
+    { "src": "/favicon-512.png", "dest": "/favicon-512.png" },
     { "src": "/(.*)", "dest": "/$1" }
+  ],
+  "headers": [
+    {
+      "source": "/sitemap.xml",
+      "headers": [{ "key": "Content-Type", "value": "application/xml" }]
+    },
+    {
+      "source": "/robots.txt",
+      "headers": [{ "key": "Content-Type", "value": "text/plain" }]
+    },
+    {
+      "source": "/llms.txt",
+      "headers": [{ "key": "Content-Type", "value": "text/plain; charset=utf-8" }]
+    },
+    {
+      "source": "/llms-full.txt",
+      "headers": [{ "key": "Content-Type", "value": "text/plain; charset=utf-8" }]
+    },
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "X-Frame-Options", "value": "DENY" },
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" }
+      ]
+    }
   ]
 }
