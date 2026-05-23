@@ -20,6 +20,16 @@ module.exports = (req, res) => {
     const payload = req.body;
     const targetUrl = payload.url;
     const headers = payload.headers || {};
+    
+    // Fallback to server key if Authorization header is missing or empty
+    let authHeader = headers['Authorization'];
+    if (!authHeader || authHeader === 'Bearer ' || authHeader === 'Bearer null' || authHeader === 'Bearer undefined') {
+      const serverKey = process.env.NVIDIA_API_KEY || process.env.MOONSHOT_API_KEY || process.env.QUAASX_API_KEY;
+      if (serverKey) {
+        headers['Authorization'] = 'Bearer ' + serverKey;
+      }
+    }
+
     const requestBody = JSON.stringify(payload.body);
 
     const parsedUrl = new URL(targetUrl);

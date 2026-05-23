@@ -2,6 +2,7 @@
   "version": 2,
   "cleanUrls": true,
   "routes": [
+    { "src": "/api/config", "dest": "/api/config.js" },
     { "src": "/api/proxy", "dest": "/api/proxy.js" },
     { "src": "/api/research", "dest": "/api/research.js" },
     { "src": "/api/parse-document", "dest": "/api/parse-document.js" },

@@ -1088,6 +1088,22 @@
       window.logTelemetry('[SYS] Contacting local environment configuration...', 'system');
     }
 
+    // Try fetching Vercel production environment configs first
+    try {
+      var configResponse = await fetch('/api/config');
+      if (configResponse.ok) {
+        var configData = await configResponse.json();
+        if (configData.supabaseUrl) {
+          localStorage.setItem('supabase_url', configData.supabaseUrl);
+        }
+        if (configData.supabaseAnonKey) {
+          localStorage.setItem('supabase_anon_key', configData.supabaseAnonKey);
+        }
+      }
+    } catch (err) {
+      console.log('Production config check skipped:', err.message);
+    }
+
     var moonshotKey = null;
     var nvidiaKey = null;
     try {

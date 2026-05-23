@@ -372,8 +372,9 @@ module.exports = async (req, res) => {
 
   try {
     const { apiKey, prompt, mode, attachedFiles } = req.body;
-    if (!apiKey) {
-      sendSSE('error', { message: 'API key is required' });
+    const effectiveApiKey = apiKey || process.env.NVIDIA_API_KEY || process.env.MOONSHOT_API_KEY || process.env.QUAASX_API_KEY;
+    if (!effectiveApiKey) {
+      sendSSE('error', { message: 'API key is required. Please set it in Vercel environment variables (NVIDIA_API_KEY or MOONSHOT_API_KEY) or enter it in the client.' });
       res.end();
       return;
     }
@@ -431,7 +432,7 @@ module.exports = async (req, res) => {
 
     let planText = '';
     try {
-      planText = await callQuaasxAPI(apiKey, plannerMessages);
+      planText = await callQuaasxAPI(effectiveApiKey, plannerMessages);
       sendSSE('telemetry', { text: '[PLANNER_AGENT] Blueprint finalized successfully.', class: 'success-line' });
     } catch (err) {
       sendSSE('telemetry', { text: 'Planner step failed, using direct fallback: ' + err.message, class: 'system' });
@@ -486,7 +487,7 @@ module.exports = async (req, res) => {
     let resultPayload = '';
     try {
       const streamResult = await callQuaasxAPIStream(
-        apiKey,
+        effectiveApiKey,
         workerMessages,
         (thinkingChunk) => {
           sendSSE('thinking', thinkingChunk);
@@ -571,7 +572,7 @@ module.exports = async (req, res) => {
       ];
 
       try {
-        const correctedContent = await callQuaasxAPI(apiKey, selfHealMessages);
+        const correctedContent = await callQuaasxAPI(effectiveApiKey, selfHealMessages);
         const parsedCorrected = tryParseJSON(correctedContent);
         if (parsedCorrected) {
           sendSSE('telemetry', { text: '[SELF-HEALING] Corrections applied successfully. Re-evaluating formulas...', class: 'success-line' });
