@@ -57,7 +57,7 @@
    * @param {AbortSignal} abortSignal - Abort signal
    * @returns {Promise<string>} - Final compiled spreadsheet JSON or plan text
    */
-  async function runAgenticPipeline(apiKey, prompt, mode, attachedFiles, callbacks, abortSignal) {
+  async function runAgenticPipeline(apiKey, prompt, mode, attachedFiles, callbacks, abortSignal, spreadsheetState) {
     var status = callbacks.onStatusUpdate || function () {};
     var stream = callbacks.onStreamContent || function () {};
     var thinking = callbacks.onThinking || function () {};
@@ -84,10 +84,16 @@
     if (window.logTelemetry) window.logTelemetry('[PLANNER_AGENT] Planning workbook layouts, worksheets and variables...', 'system');
 
     // Planner system prompt
+    var existingContext = '';
+    if (spreadsheetState) {
+      existingContext = '\n--- EXISTING WORKBOOK STATE ---\nYou are EDITING an existing spreadsheet workbook. Here is its current state JSON:\n' + JSON.stringify(spreadsheetState) + '\nYour layout blueprint must describe only the targeted modifications (adding, updating, or deleting specific columns, rows, or formulas) rather than rebuilding the entire sheet from scratch. Keep existing sheets/columns unless modifications are requested.';
+    }
+
     var plannerSystemPrompt = [
       'You are the quaasx-excel Planner Agent. You respond with highly structured spreadsheet layout blueprints.',
       'Decompose the user request and outline the worksheets, column headers, target formulas, and styling required to build this workbook.',
       'Format your output as a clear, concise bullet-point blueprint.',
+      existingContext,
       searchContext ? '\nUse the following real-time web research findings to guide your blueprint:\n' + searchContext : '',
       '',
       '--- REAL DATA EXTRACTION RULES ---',
@@ -148,6 +154,15 @@
 
     // Build the master system prompt combining Kimi prompt with subagents instructions
     var systemPrompt = window.AIService.SYSTEM_PROMPT;
+    if (spreadsheetState) {
+      systemPrompt += '\n\n' + [
+        '--- EDITING EXISTING WORKBOOK ---',
+        'You are modifying the existing workbook state provided below:',
+        JSON.stringify(spreadsheetState),
+        'Apply the layout blueprint changes. Return the COMPLETE updated JSON workbook matching the schema, preserving all existing sheets, columns, and rows that are NOT requested to be changed.',
+        '---------------------------------'
+      ].join('\n');
+    }
     systemPrompt += '\n\n' + [
       '--- MULTI-AGENT COMPILER ACTIVE ---',
       'You are now executing as an integrated tier of specialized subagents:',

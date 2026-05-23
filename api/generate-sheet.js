@@ -375,7 +375,7 @@ module.exports = async (req, res) => {
   }
 
   try {
-    const { apiKey, prompt, mode, attachedFiles, temperature } = req.body;
+    const { apiKey, prompt, mode, attachedFiles, temperature, spreadsheetState } = req.body;
     const effectiveApiKey = apiKey || process.env.NVIDIA_API_KEY || process.env.MOONSHOT_API_KEY || process.env.QUAASX_API_KEY;
     if (!effectiveApiKey) {
       sendSSE('error', { message: 'API key is required. Please set it in Vercel environment variables (NVIDIA_API_KEY or MOONSHOT_API_KEY) or enter it in the client.' });
@@ -405,10 +405,16 @@ module.exports = async (req, res) => {
     sendSSE('status', { statusText: 'Decomposing workbook structure...', agentName: 'Planner Agent 📋' });
     sendSSE('telemetry', { text: '[PLANNER_AGENT] Planning workbook layouts, worksheets and variables...', class: 'system' });
 
+    let existingContext = '';
+    if (spreadsheetState) {
+      existingContext = `\n--- EXISTING WORKBOOK STATE ---\nYou are EDITING an existing spreadsheet workbook. Here is its current state JSON:\n${JSON.stringify(spreadsheetState)}\nYour layout blueprint must describe only the targeted modifications (adding, updating, or deleting specific columns, rows, or formulas) rather than rebuilding the entire sheet from scratch. Keep existing sheets/columns unless modifications are requested.`;
+    }
+
     const plannerSystemPrompt = [
       'You are the quaasx-excel Planner Agent. You respond with highly structured spreadsheet layout blueprints.',
       'Decompose the user request and outline the worksheets, column headers, target formulas, and styling required to build this workbook.',
       'Format your output as a clear, concise bullet-point blueprint.',
+      existingContext,
       searchContext ? '\nUse the following real-time web research findings to guide your blueprint:\n' + searchContext : '',
       '',
       '--- REAL DATA EXTRACTION RULES ---',
@@ -468,6 +474,15 @@ module.exports = async (req, res) => {
     sendSSE('telemetry', { text: '[DESIGN_AGENT] Applying Obsidian theme styling & layout grids...', class: 'system' });
 
     let systemPrompt = SYSTEM_PROMPT;
+    if (spreadsheetState) {
+      systemPrompt += '\n\n' + [
+        '--- EDITING EXISTING WORKBOOK ---',
+        'You are modifying the existing workbook state provided below:',
+        JSON.stringify(spreadsheetState),
+        'Apply the layout blueprint changes. Return the COMPLETE updated JSON workbook matching the schema, preserving all existing sheets, columns, and rows that are NOT requested to be changed.',
+        '---------------------------------'
+      ].join('\n');
+    }
     systemPrompt += '\n\n' + [
       '--- MULTI-AGENT COMPILER ACTIVE ---',
       'You are now executing as an integrated tier of specialized subagents:',
