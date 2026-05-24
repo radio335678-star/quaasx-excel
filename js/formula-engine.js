@@ -6,6 +6,12 @@
 (function () {
   'use strict';
 
+  if (typeof window === 'undefined') {
+    global.window = {
+      logTelemetry: function (msg) { console.log('[TELEMETRY]', msg); }
+    };
+  }
+
   // ========== TOKEN TYPES ==========
   var TOKEN = {
     NUMBER: 'NUM', STRING: 'STR', IDENT: 'ID',
@@ -465,8 +471,8 @@
     }
   }
 
-  // ========== EXPOSE ON WINDOW ==========
-  window.FormulaEngine = {
+  // ========== EXPOSE ON WINDOW / GLOBAL ==========
+  var exports = {
     parse: parseFormula,
     evaluate: function (formula, ctx) { return evalAST(parseFormula(formula), ctx); },
     evaluateSheet: evaluateSheet,
@@ -475,4 +481,11 @@
     colIdxToLetter: colIdxToLetter,
     _registry: funcRegistry
   };
+
+  if (typeof window !== 'undefined') {
+    window.FormulaEngine = exports;
+  }
+  if (typeof module !== 'undefined' && module.exports) {
+    module.exports = exports;
+  }
 })();

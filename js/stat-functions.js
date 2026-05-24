@@ -7,7 +7,18 @@
 (function () {
   'use strict';
 
-  var reg = window.FormulaEngine.register;
+  var FormulaEngine;
+  var jStat;
+
+  if (typeof window !== 'undefined') {
+    FormulaEngine = window.FormulaEngine;
+    jStat = window.jStat;
+  } else {
+    FormulaEngine = require('./formula-engine.js');
+    jStat = require('jstat').jStat;
+  }
+
+  var reg = FormulaEngine.register;
 
   // Helper: ensure array
   function toArr(v) { return Array.isArray(v) ? v : [v]; }

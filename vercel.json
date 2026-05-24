@@ -1,7 +1,6 @@
 {
   "version": 2,
   "builds": [
-    { "src": "api/*.js", "use": "@vercel/node" },
     { "src": "js/*.js", "use": "@vercel/static" },
     { "src": "css/*.css", "use": "@vercel/static" },
     { "src": "index.html", "use": "@vercel/static" },
@@ -15,11 +14,7 @@
     { "src": "favicon-512.png", "use": "@vercel/static" }
   ],
   "routes": [
-    { "src": "/api/config", "dest": "/api/config.js" },
-    { "src": "/api/generate-sheet", "dest": "/api/generate-sheet.js" },
-    { "src": "/api/parse-document", "dest": "/api/parse-document.js" },
-    { "src": "/api/proxy", "dest": "/api/proxy.js" },
-    { "src": "/api/research", "dest": "/api/research.js" },
+    { "src": "/api/(.*)", "dest": "https://quaasx-excel-backend.up.railway.app/api/$1" },
     { "src": "/sitemap.xml", "dest": "/sitemap.xml" },
     { "src": "/robots.txt", "dest": "/robots.txt" },
     { "src": "/llms.txt", "dest": "/llms.txt" },

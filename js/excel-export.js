@@ -8,6 +8,21 @@
 (function () {
   'use strict';
 
+  var ExcelJS;
+  if (typeof window !== 'undefined' && window.ExcelJS) {
+    ExcelJS = window.ExcelJS;
+  } else {
+    ExcelJS = require('exceljs');
+    if (typeof window === 'undefined') {
+      global.window = {
+        logTelemetry: function (msg) { console.log('[TELEMETRY]', msg); },
+        FormulaEngine: require('./formula-engine.js')
+      };
+    } else {
+      window.FormulaEngine = require('./formula-engine.js');
+    }
+  }
+
   function hexToArgb(hex) {
     if (!hex) return 'FF000000';
     var clean = hex.replace('#', '').toUpperCase();
@@ -251,14 +266,21 @@
     });
 
     // Generate and download
-    var buffer = await workbook.xlsx.writeBuffer();
-    var blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-    var fileName = (state.title || 'Spreadsheet').replace(/[*?:/\\[\]]/g, '') + '.xlsx';
-    if (window.logTelemetry) {
-      window.logTelemetry('[SYS] ExcelJS workbook compile completed successfully.', 'success-line');
-      window.logTelemetry('[SYS] Direct download link dispatched: ' + fileName, 'success-line');
+    if (typeof window !== 'undefined' && typeof saveAs !== 'undefined') {
+      var buffer = await workbook.xlsx.writeBuffer();
+      var blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+      var fileName = (state.title || 'Spreadsheet').replace(/[*?:/\\[\]]/g, '') + '.xlsx';
+      if (window.logTelemetry) {
+        window.logTelemetry('[SYS] ExcelJS workbook compile completed successfully.', 'success-line');
+        window.logTelemetry('[SYS] Direct download link dispatched: ' + fileName, 'success-line');
+      }
+      saveAs(blob, fileName);
+    } else {
+      if (window.logTelemetry) {
+        window.logTelemetry('[SYS] ExcelJS workbook compile completed successfully. Returning compiled workbook object.', 'success-line');
+      }
+      return workbook;
     }
-    saveAs(blob, fileName);
   }
 
   /**
@@ -514,8 +536,15 @@
     return 'text';
   }
 
-  window.ExcelExport = {
+  var exports = {
     exportToExcel: exportToExcel,
     importFromExcel: importFromExcel
   };
+
+  if (typeof window !== 'undefined') {
+    window.ExcelExport = exports;
+  }
+  if (typeof module !== 'undefined' && module.exports) {
+    module.exports = exports;
+  }
 })();

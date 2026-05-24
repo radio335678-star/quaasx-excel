@@ -350,7 +350,48 @@
     // Download button
     downloadBtn.addEventListener('click', function () {
       if (spreadsheetState) {
-        window.ExcelExport.exportToExcel(spreadsheetState);
+        if (window.logTelemetry) {
+          window.logTelemetry('[SYS] Requesting cloud-side Excel compilation...', 'system');
+        }
+        downloadBtn.disabled = true;
+        downloadBtn.innerHTML = 'Generating...';
+
+        fetch('/api/export', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(spreadsheetState)
+        })
+        .then(response => {
+          if (!response.ok) throw new Error('Cloud Excel compilation failed');
+          return response.blob();
+        })
+        .then(blob => {
+          var url = window.URL.createObjectURL(blob);
+          var a = document.createElement('a');
+          a.href = url;
+          a.download = (spreadsheetState.title || 'Spreadsheet') + '.xlsx';
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          window.URL.revokeObjectURL(url);
+          if (window.logTelemetry) {
+            window.logTelemetry('[SYS] Excel workbook download completed successfully.', 'success-line');
+          }
+        })
+        .catch(err => {
+          console.error(err);
+          if (window.logTelemetry) {
+            window.logTelemetry('[ERR] Cloud-side Excel export failed: ' + err.message + '. Falling back to browser-side compile...', 'error-line');
+          }
+          // Fallback browser-side
+          window.ExcelExport.exportToExcel(spreadsheetState);
+        })
+        .finally(() => {
+          downloadBtn.disabled = false;
+          downloadBtn.innerHTML = 'Download Excel';
+        });
       }
     });
 
@@ -395,9 +436,7 @@
 
           // Evaluate formulas on all imported sheets
           if (window.FormulaEngine) {
-            importedState.sheets.forEach(function (sh) {
-              window.FormulaEngine.evaluateSheet(sh);
-            });
+            await evaluateAllSheetsHybridAsync(importedState);
           }
 
           // Save current project state first
@@ -989,9 +1028,7 @@
         if (parsed) {
           // Evaluate formulas on all sheets
           if (window.FormulaEngine) {
-            parsed.sheets.forEach(function (sh) {
-              window.FormulaEngine.evaluateSheet(sh);
-            });
+            await evaluateAllSheetsHybridAsync(parsed);
           }
           spreadsheetState = parsed;
           activeSheetIndex = 0;
@@ -1305,13 +1342,28 @@
     // Re-evaluate all formulas on this sheet (if auto-calc is enabled) and re-render
     var autoCalc = localStorage.getItem('pref_auto_calculate') !== 'false';
     if (autoCalc && window.FormulaEngine) {
+      // Optimistic local evaluation first
       window.FormulaEngine.evaluateSheet(sheet);
+      renderActiveSheet();
+      if (currentViewMode === 'charts' || currentViewMode === 'split') {
+        renderCharts();
+      }
+
+      // Then check and run complex cloud calculations
+      evaluateSheetHybridAsync(sheet).then(() => {
+        renderActiveSheet();
+        if (currentViewMode === 'charts' || currentViewMode === 'split') {
+          renderCharts();
+        }
+        saveCurrentProject();
+      });
+    } else {
+      renderActiveSheet();
+      if (currentViewMode === 'charts' || currentViewMode === 'split') {
+        renderCharts();
+      }
+      saveCurrentProject();
     }
-    renderActiveSheet();
-    if (currentViewMode === 'charts' || currentViewMode === 'split') {
-      renderCharts();
-    }
-    saveCurrentProject();
   }
 
   // ========== FILE CHIPS ==========
@@ -2005,8 +2057,16 @@
 
     if (spreadsheetState) {
       if (window.FormulaEngine) {
+        // Optimistic local evaluation first
         spreadsheetState.sheets.forEach(function (sh) {
           window.FormulaEngine.evaluateSheet(sh);
+        });
+        
+        // Background complex statistics evaluation
+        evaluateAllSheetsHybridAsync(spreadsheetState).then(() => {
+          renderSheetTabs();
+          renderActiveSheet();
+          setViewMode(currentViewMode);
         });
       }
       renderSheetTabs();
@@ -2290,8 +2350,16 @@
 
     if (spreadsheetState) {
       if (window.FormulaEngine) {
+        // Optimistic local evaluation first
         spreadsheetState.sheets.forEach(function (sh) {
           window.FormulaEngine.evaluateSheet(sh);
+        });
+
+        // Background complex statistics evaluation
+        evaluateAllSheetsHybridAsync(spreadsheetState).then(() => {
+          renderSheetTabs();
+          renderActiveSheet();
+          setViewMode(currentViewMode);
         });
       }
       renderSheetTabs();
@@ -2375,8 +2443,98 @@
     saveCurrentProject();
   }
 
+  // ========== HYBRID EVALUATION HELPERS ==========
+  function shouldEvaluateOnServer(sheet) {
+    if (!sheet || !sheet.rows) return false;
+    var simpleList = [
+      'SUM', 'AVERAGE', 'COUNT', 'COUNTA', 'MIN', 'MAX', 'ABS', 'ROUND',
+      'CEILING', 'FLOOR', 'POWER', 'SQRT', 'LOG', 'LN', 'EXP', 'IF',
+      'AND', 'OR', 'NOT', 'IFERROR', 'ISBLANK', 'ISNUMBER'
+    ];
+    for (var rId in sheet.rows) {
+      var row = sheet.rows[rId];
+      if (row && row.cells) {
+        for (var cId in row.cells) {
+          var cell = row.cells[cId];
+          if (cell && typeof cell.value === 'string' && cell.value.startsWith('=')) {
+            try {
+              var ast = window.FormulaEngine.parse(cell.value);
+              var hasComplex = false;
+              function traverse(node) {
+                if (!node) return;
+                if (node.t === 'Fn') {
+                  if (simpleList.indexOf(node.name.toUpperCase()) === -1) {
+                    hasComplex = true;
+                  }
+                }
+                if (node.args) {
+                  node.args.forEach(traverse);
+                }
+                if (node.l) traverse(node.l);
+                if (node.r) traverse(node.r);
+                if (node.v && typeof node.v === 'object') traverse(node.v);
+              }
+              traverse(ast);
+              if (hasComplex) return true;
+            } catch (e) {
+              // Parse failed, let browser-side check handle errors
+            }
+          }
+        }
+      }
+    }
+    return false;
+  }
+
+  async function evaluateSheetHybridAsync(sheet, customState) {
+    var state = customState || spreadsheetState;
+    var autoCalc = localStorage.getItem('pref_auto_calculate') !== 'false';
+    if (!autoCalc || !window.FormulaEngine) return;
+
+    if (shouldEvaluateOnServer(sheet)) {
+      if (window.logTelemetry) {
+        window.logTelemetry('[SYS] Complex statistical formulas detected. Routing calculation to cloud...', 'system');
+      }
+      try {
+        var response = await fetch('/api/evaluate', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            sheets: state.sheets,
+            activeSheetId: state.activeSheetId || (sheet ? sheet.id : null)
+          })
+        });
+        if (!response.ok) throw new Error('Cloud evaluation failed');
+        var data = await response.json();
+        if (data.sheets) {
+          state.sheets = data.sheets;
+          if (window.logTelemetry) {
+            window.logTelemetry('[SYS] Cloud computation complete. Grid state synchronized.', 'success-line');
+          }
+        }
+      } catch (err) {
+        console.error(err);
+        if (window.logTelemetry) {
+          window.logTelemetry('[ERR] Cloud computation failed: ' + err.message + '. Falling back to client-side...', 'error-line');
+        }
+        window.FormulaEngine.evaluateSheet(sheet);
+      }
+    } else {
+      window.FormulaEngine.evaluateSheet(sheet);
+    }
+  }
+
+  async function evaluateAllSheetsHybridAsync(state) {
+    if (!state || !state.sheets) return;
+    for (var sh of state.sheets) {
+      await evaluateSheetHybridAsync(sh, state);
+    }
+  }
+
   // ========== FORCE REFRESH HANDLER ==========
-  function handleRefresh() {
+  async function handleRefresh() {
     if (!spreadsheetState) {
       if (window.logTelemetry) {
         window.logTelemetry('[WARNING] No active spreadsheet state to refresh.', 'error-line');
@@ -2401,7 +2559,7 @@
 
     var startTime = performance.now();
 
-    // Evaluate all sheets
+    // Evaluate all sheets optimistically
     if (spreadsheetState.sheets) {
       spreadsheetState.sheets.forEach(function (sheet) {
         if (window.FormulaEngine) {
@@ -2409,6 +2567,10 @@
         }
       });
     }
+    renderActiveSheet();
+
+    // Async cloud evaluation for complex statistics
+    await evaluateAllSheetsHybridAsync(spreadsheetState);
 
     // Re-render spreadsheet active sheet
     renderActiveSheet();
