@@ -102,6 +102,14 @@
       "@type": "Organization",
       "name": "Quaasx Computers",
       "url": "https://quaasx-excel.vercel.app",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://quaasx-excel.vercel.app/favicon-512.png",
+        "width": 512,
+        "height": 512,
+        "caption": "quaasx-excel — AI Spreadsheet Generator by Quaasx Computers"
+      },
+      "image": "https://quaasx-excel.vercel.app/favicon-512.png",
       "contactPoint": {
         "@type": "ContactPoint",
         "email": "info@quaasx108.com",
@@ -112,7 +120,24 @@
       "@context": "https://schema.org",
       "@type": "WebSite",
       "name": "quaasx-excel",
-      "url": "https://quaasx-excel.vercel.app"
+      "url": "https://quaasx-excel.vercel.app",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://quaasx-excel.vercel.app/?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "ImageObject",
+      "@id": "https://quaasx-excel.vercel.app/#logo",
+      "url": "https://quaasx-excel.vercel.app/favicon-512.png",
+      "contentUrl": "https://quaasx-excel.vercel.app/favicon-512.png",
+      "width": 512,
+      "height": 512,
+      "name": "quaasx-excel Logo",
+      "caption": "Official logo of quaasx-excel — AI Spreadsheet Generator by Quaasx Computers",
+      "representativeOfPage": true
     },
     {
       "@context": "https://schema.org",
@@ -242,8 +267,21 @@
       </div>
 
       <!-- Main Logo & Brand -->
-      <div class="hero-brand">
-        <img src="/favicon-192.png" alt="quaasx-excel Premium Icon" class="hero-logo-img">
+      <div class="hero-brand" itemscope itemtype="https://schema.org/SoftwareApplication">
+        <meta itemprop="name" content="quaasx-excel">
+        <meta itemprop="applicationCategory" content="BusinessApplication">
+        <div class="hero-logo-wrapper" id="hero-logo-wrapper" title="quaasx-excel by Quaasx Computers">
+          <img
+            src="/favicon-512.png"
+            alt="quaasx-excel — AI Spreadsheet Generator by Quaasx Computers"
+            class="hero-logo-img"
+            id="hero-logo-img"
+            width="140"
+            height="140"
+            itemprop="image"
+            fetchpriority="high"
+          >
+        </div>
         <h1 class="hero-title">quaasx-excel</h1>
         <p class="hero-subtitle">powered by <span class="highlight-brand">quaasx computers</span></p>
       </div>

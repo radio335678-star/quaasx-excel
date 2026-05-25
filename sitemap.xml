@@ -1,9 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset
+  xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
+>
   <url>
     <loc>https://quaasx-excel.vercel.app/</loc>
-    <lastmod>2026-05-23</lastmod>
+    <lastmod>2026-05-25</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
+    <image:image>
+      <image:loc>https://quaasx-excel.vercel.app/favicon-512.png</image:loc>
+      <image:title>quaasx-excel — AI Spreadsheet Generator by Quaasx Computers</image:title>
+      <image:caption>Official logo of quaasx-excel, the AI-powered spreadsheet generator built by Quaasx Computers. Generate Excel files from natural language instantly.</image:caption>
+    </image:image>
   </url>
 </urlset>
