@@ -767,82 +767,86 @@
       return;
     }
 
-    // Set generating state
-    isGenerating = true;
-    abortController = new AbortController();
-    updateSendButton();
-
-    // Show user message in chat
-    var displayText = messageText;
-    if (attachedFiles.length > 0) {
-      var fileNames = attachedFiles.map(function (f) { return f.name; }).join(', ');
-      displayText = (messageText ? messageText + '\n' : '') + '📎 ' + fileNames;
-    }
-    addChatMessage(displayText, 'user', attachedFilesCopy);
-
-    // Build messages array with mode-appropriate system prompt
-    var systemPrompt = MODE_PROMPTS[currentMode] || MODE_PROMPTS.build;
-
-    // Dynamically append clarification rules for uploaded documents/images
-    if (attachedFiles.length > 0) {
-      systemPrompt += '\n\n' + [
-        '--- UPLOADED FILE HANDLER SYSTEM RULES ---',
-        'The user has uploaded one or more files (images or text/Word documents) to guide this request.',
-        '1. Inspect the contents of the uploaded files carefully.',
-        '2. If you determine that the uploaded document or image is UNREADABLE, garbled, empty, or completely lacks the necessary context/information to generate a meaningful spreadsheet (in build mode), step-by-step plan (in plan mode), or answer (in ask mode):',
-        '   - DO NOT output a spreadsheet JSON schema (in build mode) or a complete plan (in plan mode).',
-        '   - Instead, respond in plain, friendly conversational text asking the user specific, clear clarifying questions about what data or features they need to create, so they can clarify before you build.',
-        '3. FLEXIBILITY RULE: Do not ask for clarification all the time. Be extremely flexible and lenient. If the document/image is mostly readable, or if you can make reasonable, intelligent assumptions based on the domain (e.g. standard finance metrics, common medical scores, standard academic datasets), proceed with creating the spreadsheet/plan/answer directly with a helpful note. Only ask questions when you are genuinely unable to proceed or when key details are totally missing.',
-        '-------------------------------------------'
-      ].join('\n');
-    }
-
-    // Inject semantic search results from other workbooks if in Ask Mode
-    if (currentMode === 'ask' && supabase && window.supabaseLoggedIn) {
-      if (window.logTelemetry) window.logTelemetry('[SYS] Performing semantic RAG query across sheets...', 'api-info');
-      try {
-        var matches = await searchWorkbookEmbeddings(messageText);
-        if (matches && matches.length > 0) {
-          systemPrompt += "\n\nCONTEXT FROM OTHER WORKBOOKS (use this data to answer the query if relevant):\n" +
-            matches.map(function (m) {
-              return "[Workbook Match] " + m.content;
-            }).join('\n');
-          if (window.logTelemetry) {
-            window.logTelemetry('[SYS] Semantic search matched ' + matches.length + ' sheet segment(s).', 'success-line');
-          }
-        }
-      } catch (err) {
-        console.warn('RAG embedding search skipped:', err.message);
-      }
-    }
-
-    var messages = [{ role: 'system', content: systemPrompt }];
-
-    // Add chat history
-    chatHistory.forEach(function (msg) {
-      messages.push({ role: msg.role, content: msg.content });
-    });
-
-    // Build the new user message content
-    var userMessageContent = buildUserMessageContent(messageText);
-    messages.push({ role: 'user', content: userMessageContent });
-
-    // Clear input UI and state immediately so user sees message sent
-    userInput.value = '';
-    attachedFiles = [];
-    if (filePreview) filePreview.innerHTML = '';
-    autoResizeTextarea();
-    updateSendBtnState();
-
-    // Show thinking window, hide empty state
-    if (emptyState) emptyState.style.display = 'none';
-    showThinkingWindow();
-
-    // Show streaming assistant bubble in chat
-    var streamingBubble = addStreamingAssistantBubble();
-    var hasClearedThinkingIndicator = false;
+    var streamingBubble = null;
+    var userMessageContent = null;
+    var messages = [];
 
     try {
+      // Set generating state
+      isGenerating = true;
+      abortController = new AbortController();
+      updateSendButton();
+
+      // Show user message in chat
+      var displayText = messageText;
+      if (attachedFiles.length > 0) {
+        var fileNames = attachedFiles.map(function (f) { return f.name; }).join(', ');
+        displayText = (messageText ? messageText + '\n' : '') + '📎 ' + fileNames;
+      }
+      addChatMessage(displayText, 'user', attachedFilesCopy);
+
+      // Build messages array with mode-appropriate system prompt
+      var systemPrompt = MODE_PROMPTS[currentMode] || MODE_PROMPTS.build;
+
+      // Dynamically append clarification rules for uploaded documents/images
+      if (attachedFiles.length > 0) {
+        systemPrompt += '\n\n' + [
+          '--- UPLOADED FILE HANDLER SYSTEM RULES ---',
+          'The user has uploaded one or more files (images or text/Word documents) to guide this request.',
+          '1. Inspect the contents of the uploaded files carefully.',
+          '2. If you determine that the uploaded document or image is UNREADABLE, garbled, empty, or completely lacks the necessary context/information to generate a meaningful spreadsheet (in build mode), step-by-step plan (in plan mode), or answer (in ask mode):',
+          '   - DO NOT output a spreadsheet JSON schema (in build mode) or a complete plan (in plan mode).',
+          '   - Instead, respond in plain, friendly conversational text asking the user specific, clear clarifying questions about what data or features they need to create, so they can clarify before you build.',
+          '3. FLEXIBILITY RULE: Do not ask for clarification all the time. Be extremely flexible and lenient. If the document/image is mostly readable, or if you can make reasonable, intelligent assumptions based on the domain (e.g. standard finance metrics, common medical scores, standard academic datasets), proceed with creating the spreadsheet/plan/answer directly with a helpful note. Only ask questions when you are genuinely unable to proceed or when key details are totally missing.',
+          '-------------------------------------------'
+        ].join('\n');
+      }
+
+      // Inject semantic search results from other workbooks if in Ask Mode
+      if (currentMode === 'ask' && supabase && window.supabaseLoggedIn) {
+        if (window.logTelemetry) window.logTelemetry('[SYS] Performing semantic RAG query across sheets...', 'api-info');
+        try {
+          var matches = await searchWorkbookEmbeddings(messageText);
+          if (matches && matches.length > 0) {
+            systemPrompt += "\n\nCONTEXT FROM OTHER WORKBOOKS (use this data to answer the query if relevant):\n" +
+              matches.map(function (m) {
+                return "[Workbook Match] " + m.content;
+              }).join('\n');
+            if (window.logTelemetry) {
+              window.logTelemetry('[SYS] Semantic search matched ' + matches.length + ' sheet segment(s).', 'success-line');
+            }
+          }
+        } catch (err) {
+          console.warn('RAG embedding search skipped:', err.message);
+        }
+      }
+
+      messages = [{ role: 'system', content: systemPrompt }];
+
+      // Add chat history
+      chatHistory.forEach(function (msg) {
+        messages.push({ role: msg.role, content: msg.content });
+      });
+
+      // Build the new user message content
+      userMessageContent = buildUserMessageContent(messageText);
+      messages.push({ role: 'user', content: userMessageContent });
+
+      // Clear input UI and state immediately so user sees message sent
+      userInput.value = '';
+      attachedFiles = [];
+      if (filePreview) filePreview.innerHTML = '';
+      autoResizeTextarea();
+      updateSendBtnState();
+
+      // Show thinking window, hide empty state
+      if (emptyState) emptyState.style.display = 'none';
+      showThinkingWindow();
+
+      // Show streaming assistant bubble in chat
+      streamingBubble = addStreamingAssistantBubble();
+      var hasClearedThinkingIndicator = false;
+
       var responseContent = '';
 
       if (currentMode === 'build' || currentMode === 'plan') {
@@ -877,6 +881,7 @@
         var fullThinking = '';
         var fullContent = '';
         var finalContent = '';
+        var currentEvent = '';
 
         while (true) {
           var readResult = await reader.read();
@@ -884,52 +889,49 @@
 
           buffer += decoder.decode(readResult.value, { stream: true });
           var lines = buffer.split('\n');
-          buffer = lines.pop(); // Keep incomplete line
+          buffer = lines.pop(); // Keep incomplete line in buffer
 
           for (var i = 0; i < lines.length; i++) {
             var line = lines[i].trim();
             if (!line) continue;
 
             if (line.startsWith('event: ')) {
-              var eventType = line.slice(7);
-              // Read next line for data
-              i++;
-              if (i < lines.length && lines[i].startsWith('data: ')) {
-                var dataStr = lines[i].slice(6);
-                var data;
-                try {
-                  data = JSON.parse(dataStr);
-                } catch (e) {
-                  continue;
-                }
+              currentEvent = line.slice(7).trim();
+            } else if (line.startsWith('data: ')) {
+              var dataStr = line.slice(6).trim();
+              var data;
+              try {
+                data = JSON.parse(dataStr);
+              } catch (e) {
+                continue;
+              }
 
-                if (eventType === 'status') {
-                  updateThinkingStatus(data.statusText);
-                  updateAgenticStep(streamingBubble, data.agentName, data.statusText, currentMode, requiresResearch);
-                } else if (eventType === 'thinking') {
-                  fullThinking += data;
-                  updateThinkingText(fullThinking);
-                  updateThinkingStatus('AI is reasoning...');
-                  focusReasoningTab();
-                } else if (eventType === 'content') {
-                  fullContent += data;
-                  updateThinkingStatus('AI is generating response...');
-                  if (currentMode === 'build') {
-                    focusCompilationTab();
-                    updateCompilationText(fullContent);
-                    if (compilingOverlay && compilingOverlay.style.display === 'none') {
-                      compilingOverlay.style.display = 'flex';
-                    }
+              if (currentEvent === 'status') {
+                updateThinkingStatus(data.statusText);
+                updateAgenticStep(streamingBubble, data.agentName, data.statusText, currentMode, requiresResearch);
+              } else if (currentEvent === 'thinking') {
+                fullThinking += data;
+                updateThinkingText(fullThinking);
+                updateThinkingStatus('AI is reasoning...');
+                focusReasoningTab();
+              } else if (currentEvent === 'content') {
+                fullContent += data;
+                updateThinkingStatus('AI is generating response...');
+                if (currentMode === 'build') {
+                  focusCompilationTab();
+                  updateCompilationText(fullContent);
+                  if (compilingOverlay && compilingOverlay.style.display === 'none') {
+                    compilingOverlay.style.display = 'flex';
                   }
-                } else if (eventType === 'telemetry') {
-                  if (window.logTelemetry) {
-                    window.logTelemetry(data.text, data.class);
-                  }
-                } else if (eventType === 'done') {
-                  finalContent = data.content;
-                } else if (eventType === 'error') {
-                  throw new Error(data.message);
                 }
+              } else if (currentEvent === 'telemetry') {
+                if (window.logTelemetry) {
+                  window.logTelemetry(data.text, data.class);
+                }
+              } else if (currentEvent === 'done') {
+                finalContent = data.content;
+              } else if (currentEvent === 'error') {
+                throw new Error(data.message);
               }
             }
           }
@@ -1060,21 +1062,21 @@
         console.error('API error:', err);
         addChatMessage('Error: ' + err.message, 'error');
       }
+    } finally {
+      // Cleanup
+      hideThinkingWindow();
+      isGenerating = false;
+      abortController = null;
+      if (streamingBubble && streamingBubble.parentNode) {
+        streamingBubble.parentNode.removeChild(streamingBubble);
+      }
+      if (compilingOverlay) {
+        compilingOverlay.style.display = 'none';
+      }
+      autoResizeTextarea();
+      updateSendBtnState();
+      updateSendButton();
     }
-
-    // Cleanup
-    hideThinkingWindow();
-    isGenerating = false;
-    abortController = null;
-    if (streamingBubble && streamingBubble.parentNode) {
-      streamingBubble.parentNode.removeChild(streamingBubble);
-    }
-    if (compilingOverlay) {
-      compilingOverlay.style.display = 'none';
-    }
-    autoResizeTextarea();
-    updateSendBtnState();
-    updateSendButton();
   }
 
   // ========== BUILD USER MESSAGE ==========

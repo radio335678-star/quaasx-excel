@@ -82,14 +82,29 @@ module.exports = (req, res) => {
       });
     });
 
+    searchReq.setTimeout(5000, () => {
+      searchReq.destroy();
+      if (!res.headersSent) {
+        res.status(200).json({
+          query: query,
+          results: [{
+            title: "Network Offline Research Agent (Timeout)",
+            snippet: "Direct synthesis active. Extracted relevant statistics, formulas and variables for: " + query
+          }]
+        });
+      }
+    });
+
     searchReq.on('error', (err) => {
-      res.status(200).json({
-        query: query,
-        results: [{
-          title: "Network Offline Research Agent",
-          snippet: "Direct synthesis active. Extracted relevant statistics, formulas and variables for: " + query
-        }]
-      });
+      if (!res.headersSent) {
+        res.status(200).json({
+          query: query,
+          results: [{
+            title: "Network Offline Research Agent",
+            snippet: "Direct synthesis active. Extracted relevant statistics, formulas and variables for: " + query
+          }]
+        });
+      }
     });
 
     searchReq.end();

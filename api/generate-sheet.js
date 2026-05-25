@@ -196,6 +196,11 @@ async function conductResearch(query) {
       });
     });
 
+    searchReq.setTimeout(5000, () => {
+      searchReq.destroy();
+      resolve('');
+    });
+
     searchReq.on('error', () => {
       resolve('');
     });
@@ -375,7 +380,7 @@ module.exports = async (req, res) => {
   }
 
   try {
-    const { apiKey, prompt, mode, attachedFiles, temperature, spreadsheetState } = req.body;
+    const { apiKey, prompt, mode, attachedFiles, temperature, spreadsheetState } = req.body || {};
     const effectiveApiKey = apiKey || process.env.NVIDIA_API_KEY || process.env.MOONSHOT_API_KEY || process.env.QUAASX_API_KEY;
     if (!effectiveApiKey) {
       sendSSE('error', { message: 'API key is required. Please set it in Vercel environment variables (NVIDIA_API_KEY or MOONSHOT_API_KEY) or enter it in the client.' });
