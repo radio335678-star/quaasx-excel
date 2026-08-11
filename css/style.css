@@ -4,10 +4,15 @@
 
 /* --- Design Tokens --- */
 :root {
-  --bg-primary: #07070d;
-  --bg-secondary: #0f0f18;
-  --bg-panel: rgba(15, 15, 28, 0.7);
-  --bg-panel-solid: #12121f;
+  --q108-font-display: 'Outfit', sans-serif;
+  --q108-font-body: 'Inter', system-ui, -apple-system, sans-serif;
+  --q108-accent: #10b981;
+  --q108-accent-glow: 0 0 30px rgba(16, 185, 129, 0.35);
+
+  --bg-primary: #040705;
+  --bg-secondary: #0a120e;
+  --bg-panel: rgba(10, 18, 14, 0.7);
+  --bg-panel-solid: #0d1712;
   --bg-hover: rgba(255, 255, 255, 0.04);
   --bg-active: rgba(255, 255, 255, 0.08);
   --border-color: rgba(255, 255, 255, 0.08);
@@ -15,12 +20,12 @@
   --text-primary: #e8e8ed;
   --text-secondary: #8888a0;
   --text-muted: #55556a;
-  --accent-gradient: linear-gradient(135deg, #6366f1, #8b5cf6, #a855f7);
-  --accent-primary: #7c3aed;
-  --accent-hover: #6d28d9;
-  --accent-glow: rgba(124, 58, 237, 0.15);
-  --orb-glow-1: rgba(139, 92, 246, 0.4);
-  --orb-glow-2: rgba(99, 102, 241, 0.3);
+  --accent-gradient: linear-gradient(135deg, #10b981, #059669, #047857);
+  --accent-primary: #10b981;
+  --accent-hover: #059669;
+  --accent-glow: rgba(16, 185, 129, 0.2);
+  --orb-glow-1: rgba(16, 185, 129, 0.4);
+  --orb-glow-2: rgba(5, 150, 105, 0.3);
   --grid-color: rgba(18, 18, 32, 0.3);
   --success: #22c55e;
   --warning: #f59e0b;
