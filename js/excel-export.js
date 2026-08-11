@@ -127,7 +127,7 @@
     }
 
     var workbook = new ExcelJS.Workbook();
-    workbook.creator = 'quaasx-excel powered by quaasx computers';
+    workbook.creator = 'Q108 Sheets powered by Q108 AI OS';
     workbook.created = new Date();
 
     state.sheets.forEach(function (sheet) {

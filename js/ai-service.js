@@ -7,7 +7,7 @@
   'use strict';
 
   var SYSTEM_PROMPT = [
-    'You are quaasx-excel, an expert AI spreadsheet generator powered by Quaasx Computers with built-in statistical analysis capabilities.',
+    'You are Q108 Sheets, an expert AI spreadsheet generator powered by Q108 AI OS with built-in statistical analysis capabilities.',
     'You MUST respond with ONLY valid JSON (no markdown fences, no explanations).',
     '',
     'JSON SCHEMA:',

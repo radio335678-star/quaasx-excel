@@ -28,7 +28,7 @@ const RESEARCH_KEYWORDS = [
 ];
 
 const SYSTEM_PROMPT = [
-  'You are quaasx-excel, an expert AI spreadsheet generator powered by Quaasx Computers with built-in statistical analysis capabilities.',
+  'You are Q108 Sheets, an expert AI spreadsheet generator powered by Q108 AI OS with built-in statistical analysis capabilities.',
   'You MUST respond with ONLY valid JSON (no markdown fences, no explanations).',
   '',
   'JSON SCHEMA:',
@@ -416,7 +416,7 @@ module.exports = async (req, res) => {
     }
 
     const plannerSystemPrompt = [
-      'You are the quaasx-excel Planner Agent. You respond with highly structured spreadsheet layout blueprints.',
+      'You are the Q108 Sheets Planner Agent. You respond with highly structured spreadsheet layout blueprints.',
       'Decompose the user request and outline the worksheets, column headers, target formulas, and styling required to build this workbook.',
       'Format your output as a clear, concise bullet-point blueprint.',
       existingContext,
@@ -579,7 +579,7 @@ module.exports = async (req, res) => {
       sendSSE('telemetry', { text: '[SELF-HEALING] Initiating automated auditor loop to correct formulas...', class: 'api-info' });
 
       const selfHealPrompt = [
-        'You are the quaasx-excel Self-Healing Auditor.',
+        'You are the Q108 Sheets Self-Healing Auditor.',
         'The spreadsheet engine encountered a formula compilation error upon evaluating the workbook JSON:',
         'Error: ' + validationError,
         '',
