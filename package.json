@@ -2,12 +2,32 @@
   "name": "q108-sheets",
   "version": "1.0.0",
   "description": "Q108 Sheets — AI Spreadsheet & Data Studio",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
   "dependencies": {
-    "express": "^4.18.2",
     "cors": "^2.8.5",
     "exceljs": "^4.4.0",
     "jstat": "^1.9.6",
-    "mammoth": "^1.8.0"
+    "lucide-react": "^0.462.0",
+    "mammoth": "^1.8.0",
+    "next": "16.3.0",
+    "react": "19.2.8",
+    "react-dom": "19.2.8"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/node": "^22.2.0",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.3.0",
+    "typescript": "^5.5.4"
   },
   "engines": {
     "node": ">=18.0.0"
