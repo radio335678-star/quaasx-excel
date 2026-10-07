@@ -27,8 +27,8 @@ quaasx-excel is a next-generation web application that converts natural language
 - Enterprise: Custom pricing (dedicated deployments, compliance, audit logs)
 
 ## Links
-- Website: https://quaasx-excel.vercel.app
+- Website: https://excel.quaasx108.com
 - Contact: info@quaasx108.com
 
 ## Docs
-- [Full product documentation](https://quaasx-excel.vercel.app/llms-full.txt)
+- [Full product documentation](https://excel.quaasx108.com/llms-full.txt)

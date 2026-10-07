@@ -35,4 +35,4 @@ Allow: /
 Disallow: /api/
 
 # Sitemap location
-Sitemap: https://quaasx-excel.vercel.app/sitemap.xml
+Sitemap: https://excel.quaasx108.com/sitemap.xml

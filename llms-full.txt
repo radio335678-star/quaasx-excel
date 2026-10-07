@@ -12,7 +12,7 @@ This document serves as a complete semantic indexing source and developer-level 
 
 Key attributes:
 * **Developer/Entity**: Quaasx Computers
-* **URL**: https://quaasx-excel.vercel.app
+* **URL**: https://excel.quaasx108.com
 * **Target Audience**: Academic researchers, medical/clinical investigators, quality control engineers, and finance professionals.
 * **Core Philosophy**: **100% Client-Side Privacy**. All formula parsing, cell updates, workbook compiling, and data visualization occur locally within the user's browser sandbox. No spreadsheet data, cell contents, or proprietary numbers are ever transmitted to or stored on external servers.
 
