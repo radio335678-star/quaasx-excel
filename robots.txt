@@ -35,4 +35,5 @@ Allow: /
 Disallow: /api/
 
 # Sitemap location
+# llms: /llms.txt
 Sitemap: https://excel.quaasx108.com/sitemap.xml
