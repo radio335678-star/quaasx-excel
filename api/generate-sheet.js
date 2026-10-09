@@ -110,6 +110,12 @@ function detectSearchIntent(query) {
 }
 
 function getGatewayConfig(apiKey) {
+  if (process.env.OPENAI_BASE_URL) {
+    return {
+      url: `${process.env.OPENAI_BASE_URL.replace(/\/v1\/?$/, '')}/v1/chat/completions`,
+      provider: 'openai'
+    };
+  }
   if (apiKey && apiKey.startsWith('nvapi-')) {
     return {
       url: 'https://integrate.api.nvidia.com/v1/chat/completions',
@@ -123,6 +129,9 @@ function getGatewayConfig(apiKey) {
 }
 
 function getActualModelId(id, provider) {
+  if (provider === 'openai') {
+    return process.env.OPENAI_MODEL || 'gemini-3.8-flash-high';
+  }
   return provider === 'nvidia' ? 'moonshotai/kimi-k2.6' : 'kimi-k2.6';
 }
 
@@ -381,7 +390,7 @@ module.exports = async (req, res) => {
 
   try {
     const { apiKey, prompt, mode, attachedFiles, temperature, spreadsheetState } = req.body || {};
-    const effectiveApiKey = apiKey || process.env.NVIDIA_API_KEY || process.env.MOONSHOT_API_KEY || process.env.QUAASX_API_KEY;
+    const effectiveApiKey = process.env.OPENAI_API_KEY || apiKey || process.env.NVIDIA_API_KEY || process.env.MOONSHOT_API_KEY || process.env.QUAASX_API_KEY;
     if (!effectiveApiKey) {
       sendSSE('error', { message: 'API key is required. Please set it in Vercel environment variables (NVIDIA_API_KEY or MOONSHOT_API_KEY) or enter it in the client.' });
       res.end();
